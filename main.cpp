@@ -20,7 +20,7 @@ int main()
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
     bkgd(COLOR_PAIR(1)); //background 지정
     Stage st1; //stage1 객체 생성
-    st1.loadStage("stage1.txt"); //stage1.txt 로드
+    st1.loadStage("data/stage/stage1.txt"); //stage1.txt 로드
 
     /*틱마다 갱신 후 출력해야하므로 나중에 반복문 안에 들어가게 하면 될 듯?*/
     st1.printStage(); //화면출력
