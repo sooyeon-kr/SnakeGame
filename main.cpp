@@ -28,8 +28,8 @@ int main()
     st1.printStage(); //화면출력
     refresh(); //화면
     while(1){
-      st1.movesnake();
-    }
+      st1.movesnake(); // 제가 막힌 부분이 뱀이 키보드 입력할때만 움직이는 것입니다.
+    }	               // 
 
 
     getch();
