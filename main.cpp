@@ -1,6 +1,8 @@
 #include <ncurses.h> //ncurses 라이브러리를 사용하는 프로그램들의 컴파일을 위해 헤더파일 포함
 #include <fstream>
 #include <iostream>
+#include <unistd.h>
+
 #include "Stage.h"
 using namespace std;
 
@@ -20,16 +22,20 @@ int main()
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
     bkgd(COLOR_PAIR(1)); //background 지정
     Stage st1; //stage1 객체 생성
-    st1.loadStage("data/stage/stage1.txt"); //stage1.txt 로드
+    st1.loadStage("stage1"); //stage1.txt 로드
 
     /*틱마다 갱신 후 출력해야하므로 나중에 반복문 안에 들어가게 하면 될 듯?*/
     st1.printStage(); //화면출력
-    refresh(); //화면 
+    refresh(); //화면
+    while(1){
+      st1.movesnake();
+    }
+
 
     getch();
 
     endwin();
 
     return 0;
-    
+
 }
