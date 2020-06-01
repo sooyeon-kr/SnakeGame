@@ -1,10 +1,5 @@
 #ifndef __Stage__H__
 #define __Stage__H__
-enum class TileType{
-    Blank,
-    Wall,
-    ImmuneWall
-};
 
 class Stage
 {
@@ -12,34 +7,14 @@ class Stage
 public:
     //메소드
     bool loadStage(char* filename);
-    void printStage();
 
-    //멤버변수
-private:
-    int row = -1;
-    int col = -1;
-    int **map = nullptr;
-};
-
-#endif
-
-#ifndef __Stage__H__
-#define __Stage__H__
-enum class TileType{
-    Blank,
-    Wall,
-    ImmuneWall
-};
-
-class Stage
-{
-    //생성자
-public:
-    //메소드
-    bool loadStage(char* filename);
-    void printStage();
     char body='o';
     void movesnake();
+
+    int** GetMap() { return map; }
+    int GetRow() { return row; }
+    int GetColumn() { return col; }
+
     //멤버변수
 private:
   int x[30],y[30]; //뱀을 구현하는데 필요한 좌표 배열입니다.
