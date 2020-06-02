@@ -4,9 +4,9 @@
 
 void SnakeGame::Init(){
     renderer.Init();
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
     mSnake.Init();
-    
+
 }
 
 void SnakeGame::Play(){
@@ -22,14 +22,22 @@ void SnakeGame::Play(){
         //뱀의 다음 방향의 타일 종류 파악 후
         //if(다음 위치 타일이 벽인 경우, mstage)break;
         /*"stage.h 보시면 int **map 이 있는데, 이거 이용하셔서 함수를 만드신 후에 매개변수로 위치값 y, x좌표를 넘겨서 그 값이 0인지 1인지 2인지에 따라
-        타일의 종류를.파악하면 될 것 같습니다*/
-
-
+        타일의 종류를.파악하면 될 것
+        같습니다*/
+        if(!CheckWall(mSnake.head.Pos.x,mSnake.head.Pos.y))
+        break;
 
 
         //아닌경우 뱀의 현재위치 업데이트
         renderer.Draw(mStage, mSnake);
-        
+
         sleep(5);
     }
+}
+
+bool SnakeGame::CheckWall(int x, int y){
+  if(mStage.map[x][y]==(int)TileType::Wall || mStage.map[x][y]==(int)TileType::ImmuneWall)
+  return false;
+  else if(mStage.map[x][y]==(int)TileType::Blank)
+  return true;
 }
