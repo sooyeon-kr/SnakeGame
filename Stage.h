@@ -14,8 +14,7 @@ public:
     int** GetMap() { return map; }
     int GetRow() { return row; }
     int GetColumn() { return col; }
-    int **map = nullptr;
-
+    bool CheckWall(int x, int y);
     //멤버변수
 private:
   int x[30],y[30]; //뱀을 구현하는데 필요한 좌표 배열입니다.
@@ -25,6 +24,7 @@ private:
   char direction;
     int row = -1;
     int col = -1;
+    int **map = nullptr;
 
 };
 
