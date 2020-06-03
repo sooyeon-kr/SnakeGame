@@ -12,7 +12,7 @@ bool Stage::loadStage(char* filename)
     {
         return false;
     }
-a
+    
     mapFile>>row>>col;//row, col 값 받아옴
     mapFile.ignore();
 
