@@ -1,5 +1,5 @@
 #include <fstream>
-
+#include <ncurses.h>
 #include "Stage.h"
 using namespace std;
 
@@ -12,7 +12,7 @@ bool Stage::loadStage(char* filename)
     {
         return false;
     }
-
+a
     mapFile>>row>>col;//row, col 값 받아옴
     mapFile.ignore();
 
@@ -34,4 +34,9 @@ bool Stage::loadStage(char* filename)
     mapFile.close();
 
 }
-
+bool Stage::CheckWall(int x, int y){
+  if(map[x][y]==2 || map[x][y]==1)
+  return false;
+  else if(map[x][y]==0)
+  return true;
+}
