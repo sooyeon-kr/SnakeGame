@@ -1,35 +1,56 @@
 #include "SnakeGame.h"
+#include "linux_kbhit.h"
 #include <unistd.h>
 
 
 void SnakeGame::Init(){
     renderer.Init();
-    mStage.loadStage("stage1");
+    mStage.loadStage("data/stage/stage1.txt");
     mSnake.Init();
 
 }
 
 void SnakeGame::Play(){
     /*틱마다 갱신 후 출력*/
+
     while(1){
-        //뱀의 다음 방향 결정인데, 현재는 right로 해놨으나 같이 상의 후 랜덤이나 한 값으로 결정하면 좋을 것 같습니다.
-        mSnake.SelectDirectionSnake();
+        //입력받은 키를 b에 저장
+        int key = getch();
 
+        Direction nextDir = mSnake.GetCurDirection();
+        
+        //키 입력이 올 경우
+        if(key != -1){
+            switch(key){
+            case KEY_LEFT:            //왼쪽 방향키를 눌렀을때
+                nextDir = Direction::LEFT;
+                break;
+            case KEY_RIGHT:             //오른쪽 방향키
+                nextDir = Direction::RIGHT;
+                break;
+            case KEY_UP:                //위쪽 방향키
+                nextDir = Direction::UP;
+                break;
+            case KEY_DOWN:              //아래쪽 방향키
+                nextDir = Direction::DOWN;
+                break;
+            }
+        }
 
+        //뱀의 다음 방향 계산
+        DPosition nextPos = mSnake.NextSnakePos(nextDir);
 
+        //다음방향 좌표를 이용해서 충돌 계산하거나 뱀이 살아있는 상태인지 체크
+        if(!(mStage.CheckWall(nextPos.Pos.x, nextPos.Pos.y))){
+            break;
+        }
 
-        //해주시면 될 부분
-        //뱀의 다음 방향의 타일 종류 파악 후
-        //if(다음 위치 타일이 벽인 경우, mstage)break;
-        /*"stage.h 보시면 int **map 이 있는데, 이거 이용하셔서 함수를 만드신 후에 매개변수로 위치값 y, x좌표를 넘겨서 그 값이 0인지 1인지 2인지에 따라
-        타일의 종류를.파악하면 될 것
-        같습니다*/
-        if(!(mStage.CheckWall(mSnake.head.Pos.x,mSnake.head.Pos.y)))
-        break;
+        //충돌 아닌 경우 뱀의 현재위치 업데이트
+        mSnake.UpdateSnakePos(nextPos);
 
-        //아닌경우 뱀의 현재위치 업데이트
+        //그리기
         renderer.Draw(mStage, mSnake);
-
-        sleep(5);
+        usleep(50);
     }
+
 }

@@ -9,28 +9,36 @@ void Snake::Init(){
     head.Pos.y = 10;
 }
 
-void Snake::SelectDirectionSnake()
+DPosition Snake::NextSnakePos(Direction nextDir)
 {
-    int b=getch(); //입력받은 키를 b에
-
-    switch(b){
-    case KEY_LEFT:            //왼쪽 방향키를 눌렀을때
-        head.Dir = Direction::LEFT;
-        break;
-    case KEY_RIGHT:             //오른쪽 방향키
-        head.Dir = Direction::RIGHT;
-        break;
-    case KEY_UP:                //위쪽 방향키
-        head.Dir = Direction::UP;
-        break;
-    case KEY_DOWN:              //아래쪽 방향키
-        head.Dir = Direction::DOWN;
-        break;
-    }
 
 
+  //다음 방향 계산
+  DPosition nextPos;
+  nextPos.Dir = nextDir;
+  Position curPos = { head.Pos };
+  
+  switch(nextDir){
+    case Direction::LEFT:
+      nextPos.Pos.x = curPos.x - 1;
+      nextPos.Pos.y = curPos.y;
+      break;
+    case Direction::RIGHT:
+      nextPos.Pos.x = curPos.x + 1;
+      nextPos.Pos.y = curPos.y;
+      break;
+    case Direction::UP:
+      nextPos.Pos.x = curPos.x;
+      nextPos.Pos.y = curPos.y - 1;
+      break;
+    case Direction::DOWN:
+      nextPos.Pos.x = curPos.x;
+      nextPos.Pos.y = curPos.y + 1;
+      break;
+  }
 
 
+return nextPos;
 
 
 /*
@@ -126,4 +134,10 @@ void Snake::SelectDirectionSnake()
 
 }
 */
+}
+
+
+void Snake::UpdateSnakePos(DPosition& dPos){
+  head.Dir = dPos.Dir;
+  head.Pos = dPos.Pos;
 }

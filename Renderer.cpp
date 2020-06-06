@@ -20,8 +20,8 @@ void Renderer::Draw(Stage& stage, Snake& snake){
     DrawMap(stage);
     DrawSnake(snake);
     refresh();
-
 }
+
 void Renderer::DrawMap(Stage& stage){
     //스테이지에 대한 정보를 받아옴
     auto map = stage.GetMap();
@@ -86,7 +86,7 @@ void Renderer::DrawSnake(Snake& snake){
         //뱀의 다음을 그릴 위치 결정
         switch(nextPos){
             case Direction::UP:
-            drawPos.y -= 1;
+            drawPos.y += 1;
             break;
 
             case Direction::RIGHT:
@@ -98,7 +98,7 @@ void Renderer::DrawSnake(Snake& snake){
             break;
 
             case Direction::DOWN:
-            drawPos.y += 1;
+            drawPos.y -= 1;
             break;
         }
         

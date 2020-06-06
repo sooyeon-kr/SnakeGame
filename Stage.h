@@ -1,6 +1,13 @@
 #ifndef __Stage__H__
 #define __Stage__H__
 
+//Wall 종류
+enum class TileType{ 
+    Blank,
+    Wall,
+    ImmuneWall
+};
+
 class Stage
 {
     //생성자

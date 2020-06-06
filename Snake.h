@@ -16,7 +16,7 @@ struct Position{
 };
 
 //헤드
-struct Head{
+struct DPosition{
     Direction Dir;
     Position Pos;
 };
@@ -30,11 +30,15 @@ public:
     //초기화
     void Init();
     //키 입력받아 다음 방향 결정하는 함수
-    void SelectDirectionSnake();
+    DPosition NextSnakePos(Direction nextDir);
+    void UpdateSnakePos(DPosition& dPos);
+
+    Direction GetCurDirection(){return head.Dir;}
     
 public:
-    Head head;
+    DPosition head;
     int length = 3; //뱀의 초기 길이
+    bool isLive = true; //뱀이 죽었는지 살았는지 체크
 };
 
 #endif 

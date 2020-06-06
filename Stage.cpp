@@ -35,8 +35,8 @@ bool Stage::loadStage(char* filename)
 
 }
 bool Stage::CheckWall(int x, int y){
-  if(map[x][y]==2 || map[x][y]==1)
-  return false;
-  else if(map[x][y]==0)
-  return true;
+  if(map[y][x] == (int)TileType::ImmuneWall || map[y][x] == (int)TileType::Wall)
+    return false;
+  else if(map[y][x] == (int)TileType::Blank)
+    return true;
 }

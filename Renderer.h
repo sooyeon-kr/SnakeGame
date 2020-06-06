@@ -5,13 +5,6 @@
 #include "Stage.h"
 #include "Snake.h"
 
-//Wall 종류
-enum class TileType{ 
-    Blank,
-    Wall,
-    ImmuneWall
-};
-
 class Renderer{
     
 public:
