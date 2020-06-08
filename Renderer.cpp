@@ -13,6 +13,8 @@ void Renderer::Init(){
     init_pair(2, COLOR_YELLOW, COLOR_WHITE);
     init_pair(3, COLOR_CYAN, COLOR_WHITE);
     bkgd(COLOR_PAIR(1)); //background 지정
+    win2 = subwin(stdscr, 30,30, 0, 50);
+
 
 }
 
@@ -27,7 +29,8 @@ void Renderer::DrawMap(Stage& stage){
     auto map = stage.GetMap();
     int row = stage.GetRow();
     int col = stage.GetColumn();
-    
+
+
     //커서 옮김
     move(0, 0);
 
@@ -56,6 +59,13 @@ void Renderer::DrawMap(Stage& stage){
         }
         printw("\n");
     }
+    init_pair(4, COLOR_BLACK, COLOR_BLUE); //윈도우 백그라운드 컬러
+    // box(win, 0, 0);
+    wattron(win2,COLOR_PAIR(4));
+    wbkgd(win2, COLOR_PAIR(4));
+    wmove(win2, 15,15);
+    wprintw(win2, "test");
+    refresh();
 }
 
 
