@@ -28,9 +28,9 @@ public:
     void Init();
 
     //스테이지와 뱀을 그리는 함수
-    void ClearScreen();
     void Draw(Stage& stage, Snake& snake);
     void Refresh();
+
 
     void End();
 

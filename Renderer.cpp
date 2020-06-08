@@ -39,13 +39,8 @@ void Renderer::Init(){
 
         windows[i] = subscrs[i];
     }
-
-    // refresh();
 }
 
-void Renderer::ClearScreen(){
-
-}
 
 void Renderer::Draw(Stage& stage, Snake& snake){
     DrawMap(stage);
@@ -63,7 +58,8 @@ void Renderer::DrawMap(Stage& stage){
     auto map = stage.GetMap();
     int row = stage.GetRow();
     int col = stage.GetColumn();
-    
+
+
     //커서 옮김
     move( 0,0);
 
@@ -92,7 +88,6 @@ void Renderer::DrawMap(Stage& stage){
         }
         printw("\n");
     }
-
 }
 
 

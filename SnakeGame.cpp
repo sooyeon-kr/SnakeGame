@@ -40,10 +40,13 @@ bool SnakeGame::Play(){
              //입력받은 키를 b에 저장
             int key = getch();
 
+
             if(errno != EAGAIN){
                 renderer.PrintSystemMessage("Error Not EAGAIN");
                 return false;
             }
+
+
 
             Direction nextDir = mSnake.GetCurDirection();
             
@@ -104,9 +107,6 @@ bool SnakeGame::Play(){
             renderer.PrintScoreMessage(str);
 
             renderer.Refresh();
-            
-                
-
         }
     }
 
@@ -139,5 +139,4 @@ bool SnakeGame::IsGameOver(){
             return true;
         }
     }
-
 }
