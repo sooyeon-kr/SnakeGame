@@ -18,6 +18,8 @@ public:
     void Init();
     //스테이지와 뱀을 그리는 함수
     void Draw(Stage& stage, Snake& snake);
+    WINDOW *win2;
+
 
 private:
     void DrawMap(Stage& stage);
