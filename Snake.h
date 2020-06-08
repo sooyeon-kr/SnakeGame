@@ -33,7 +33,10 @@ public:
     DPosition NextSnakePos(Direction nextDir);
     void UpdateSnakePos(DPosition& dPos);
 
+    void Die(){isLive = false;}
+
     Direction GetCurDirection(){return head.Dir;}
+    bool IsAlive(){return isLive;}
     
 public:
     DPosition head;

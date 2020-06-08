@@ -1,5 +1,4 @@
 #include "Snake.h"
-#include <ncurses.h>
 
 using namespace std;
 
@@ -7,12 +6,11 @@ void Snake::Init(){
     head.Dir = Direction::RIGHT;
     head.Pos.x = 10;
     head.Pos.y = 10;
+    isLive = true;
 }
 
 DPosition Snake::NextSnakePos(Direction nextDir)
 {
-
-
   //다음 방향 계산
   DPosition nextPos;
   nextPos.Dir = nextDir;

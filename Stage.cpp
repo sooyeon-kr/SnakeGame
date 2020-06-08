@@ -1,5 +1,4 @@
 #include <fstream>
-#include <ncurses.h>
 #include "Stage.h"
 using namespace std;
 
@@ -35,8 +34,15 @@ bool Stage::loadStage(char* filename)
 
 }
 bool Stage::CheckWall(int x, int y){
-  if(map[y][x] == (int)TileType::ImmuneWall || map[y][x] == (int)TileType::Wall)
+    //화면 밖으로 나갈 경우
+    if(x >= col || x < 0)
+        return false;
+    else if(y >= row || row < 0)
+        return false;
+
+    //화면 안에서 벽에서 부딪힐 때
+    if(map[y][x] == (int)TileType::ImmuneWall || map[y][x] == (int)TileType::Wall)
     return false;
-  else if(map[y][x] == (int)TileType::Blank)
+    else if(map[y][x] == (int)TileType::Blank)
     return true;
 }

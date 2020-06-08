@@ -9,8 +9,16 @@ public:
 public:
     //초기화
     void Init();
+
+    //타이머 작동
+    void StartTimer();
+
+    //타이머 리셋
+    void ResetTimer();
+
     //댈타타임갱신
     void UpdateTime();
+
     //델타타임가져오는 함수
     float GetDeltaTime();
 
@@ -24,8 +32,7 @@ private:
     unsigned long startTime;
     unsigned long curTime;
     unsigned long prevTime;
+    unsigned long endTime;
     unsigned long delTime;
-
-
 };
 #endif

@@ -1,4 +1,6 @@
 #include "Renderer.h"
+#include <fstream>
+
 void Renderer::Init(){
     initscr(); //ncurses 초기화
 
@@ -12,13 +14,47 @@ void Renderer::Init(){
     init_pair(1, COLOR_RED, COLOR_WHITE); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
     init_pair(2, COLOR_YELLOW, COLOR_WHITE);
     init_pair(3, COLOR_CYAN, COLOR_WHITE);
-    bkgd(COLOR_PAIR(1)); //background 지정
+    init_pair(4, COLOR_BLUE, COLOR_BLACK);
+    bkgd(COLOR_PAIR(4)); //background 지정
+
+    //윈도우 속성 받아오기
+    std::ifstream inStream("Screen.txt");
+    if(!inStream.is_open()){
+        printw("Error\n");
+        endwin();
+        return;
+    }
+    for(int i = 0; i < (int)WindowType::SIZE; i++){
+        for(int j = 0; j < 4; j++)
+            inStream >> subWinProperty[i][j];
+    }
+    inStream.close();
+
+    //SubWindow 생성
+    WINDOW* subscrs[(int)WindowType::SIZE];
+    for(int i = 0; i < (int)WindowType::SIZE; i++){
+
+        //서브윈도우 생성
+        subscrs[i] = subwin(stdscr, subWinProperty[i][0], subWinProperty[i][1], subWinProperty[i][2], subWinProperty[i][3]);
+
+        windows[i] = subscrs[i];
+    }
+
+    // refresh();
+}
+
+void Renderer::ClearScreen(){
 
 }
 
 void Renderer::Draw(Stage& stage, Snake& snake){
     DrawMap(stage);
     DrawSnake(snake);
+    DrawBox(windows[(int)WindowType::SCORE]);
+    DrawBox(windows[(int)WindowType::MISSION]);
+}
+
+void Renderer::Refresh(){
     refresh();
 }
 
@@ -29,7 +65,7 @@ void Renderer::DrawMap(Stage& stage){
     int col = stage.GetColumn();
     
     //커서 옮김
-    move(0, 0);
+    move( 0,0);
 
     //벽 출력
     for(int i=0; i<row; i++)
@@ -39,7 +75,7 @@ void Renderer::DrawMap(Stage& stage){
             switch(map[i][k]){
                 case (int)TileType::Wall:
                     attron(COLOR_PAIR(1));
-                    addch(ACS_BOARD);
+                    addch(ACS_CKBOARD);
                     attroff(COLOR_PAIR(1));
                     break;
                 case (int)TileType::ImmuneWall:
@@ -56,10 +92,12 @@ void Renderer::DrawMap(Stage& stage){
         }
         printw("\n");
     }
+
 }
 
 
 void Renderer::DrawSnake(Snake& snake){
+    
     //뱀을 그릴 위치와 뱀의 연결된 다음 방향 
     Position drawPos = snake.head.Pos;
     Direction nextPos = snake.head.Dir;
@@ -103,5 +141,44 @@ void Renderer::DrawSnake(Snake& snake){
         }
         
     }
+}
 
+void Renderer::DrawBox(WINDOW* win){
+    box(win, 0, 0);
+    wbkgd(win, COLOR_PAIR(1)); //백그라운드 컬러도 지정
+}
+
+
+void Renderer::PrintSystemMessage(const char* str){
+    WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
+    
+    wattron(sysWin, COLOR_PAIR(3));
+    wprintw(sysWin, str);
+    wattroff(sysWin, COLOR_PAIR(3));
+    refresh();
+
+    delwin(sysWin);
+}
+
+void Renderer::PrintSystemMessage(std::string str){
+    WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
+    
+    wattron(sysWin, COLOR_PAIR(3));
+    wprintw(sysWin, str.c_str());
+    wattroff(sysWin, COLOR_PAIR(3));
+    refresh();
+
+    delwin(sysWin);
+}
+
+void Renderer::PrintScoreMessage(const char* str){
+    wmove(windows[(int)WindowType::SCORE], 0, 0);
+    wattron(windows[(int)WindowType::SCORE], COLOR_PAIR(3));
+    wprintw(windows[(int)WindowType::SCORE], str);
+    wattroff(windows[(int)WindowType::SCORE], COLOR_PAIR(3));
+    refresh();
+}
+
+void Renderer::End(){
+    endwin();
 }
