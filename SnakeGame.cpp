@@ -18,7 +18,7 @@ void SnakeGame::Play(){
         int key = getch();
 
         Direction nextDir = mSnake.GetCurDirection();
-        
+
         //키 입력이 올 경우
         if(key != -1){
             switch(key){
@@ -42,6 +42,8 @@ void SnakeGame::Play(){
 
         //다음방향 좌표를 이용해서 충돌 계산하거나 뱀이 살아있는 상태인지 체크
         if(!(mStage.CheckWall(nextPos.Pos.x, nextPos.Pos.y))){
+          wmove(renderer.win2,15,15);
+          wprintw(renderer.win2,"game over");
             break;
         }
 
@@ -52,5 +54,4 @@ void SnakeGame::Play(){
         renderer.Draw(mStage, mSnake);
         usleep(50);
     }
-
 }
