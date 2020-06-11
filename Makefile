@@ -1,15 +1,15 @@
 OBJECTS = main.o Renderer.o SnakeGame.o Snake.o Stage.o Timer.o
 
 main: $(OBJECTS)
-	g++ -o main $(OBJECTS) -lncursesw 
+	g++ -o main $(OBJECTS) -lncursesw
 
-main.o: main.cpp
+main.o: main.cpp SnakeGame.h
 	g++ -c main.cpp
 
-Renderer.o: Renderer.h Renderer.cpp Stage.h Snake.h
+Renderer.o: Renderer.cpp Renderer.h Stage.h Snake.h
 	g++ -c Renderer.cpp
 
-SnakeGame.o: SnakeGame.h SnakeGame.cpp Renderer.h
+SnakeGame.o: SnakeGame.cpp SnakeGame.h Renderer.h Timer.h
 	g++ -c SnakeGame.cpp
 
 Snake.o: Snake.h Snake.cpp
@@ -23,5 +23,3 @@ Timer.o: Timer.h Timer.cpp
 
 clean:
 	rm  $(OBJECTS)
-
-
