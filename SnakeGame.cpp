@@ -38,7 +38,7 @@ bool SnakeGame::Play(){
             totalDt += tickDt;
             tickDt = 0.0f;
              //입력받은 키를 b에 저장
-            int key = getch();
+            int key = getch(); 
 
 
             if(errno != EAGAIN){
@@ -49,7 +49,7 @@ bool SnakeGame::Play(){
 
 
             Direction nextDir = mSnake.GetCurDirection();
-            
+
             //키 입력이 올 경우
             if(key != -1){
                 switch(key){
@@ -82,7 +82,7 @@ bool SnakeGame::Play(){
             //다음방향 좌표를 이용해서 충돌 계산하거나 뱀이 살아있는 상태인지 체크
             if(!(mStage.CheckWall(nextPos.Pos.x, nextPos.Pos.y)) || !mSnake.IsAlive()){
                 renderer.PrintSystemMessage("Game Over\nRetry Y/N");
-                
+
                 if(IsGameOver()){
 
                     return false;
