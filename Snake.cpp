@@ -7,6 +7,17 @@ void Snake::Init(){
     head.Pos.x = 10;
     head.Pos.y = 10;
     isLive = true;
+    for(int i=0;i<length;i++){
+      if(i==0){
+        sp.push_back(head.Pos);
+      }
+      sp.push_back({10-i,10});
+    }
+
+    for(int i=0;i<15;i++){      //아마 최대길이를 15로 할거같아서 15회로 했습니다.
+      savesp.push_back({0,0});  //savesp는 이동하기 이전의 좌표를 기억하기 위한 배열입니다.
+    }
+
 }
 
 DPosition Snake::NextSnakePos(Direction nextDir)
@@ -15,7 +26,7 @@ DPosition Snake::NextSnakePos(Direction nextDir)
   DPosition nextPos;
   nextPos.Dir = nextDir;
   Position curPos = { head.Pos };
-  
+
   switch(nextDir){
     case Direction::LEFT:
       nextPos.Pos.x = curPos.x - 1;
@@ -45,7 +56,6 @@ return nextPos;
     printw("Game over");
   }
   int b=getch(); //입력받은 키를 b에
-
   switch(b){
     case KEY_LEFT:            //왼쪽 방향키를 눌렀을때
       if(direction == 'r'){ //현재 진행 방향과 반대일 경우 gameover
@@ -88,7 +98,6 @@ return nextPos;
         break;
       }
   }
-
   for(int i=0;i<length;i++){ //움직이기 전의 좌표를 보존하기 위해 따로 배열에 넣었습니다.
     newx[i]=x[i];
     newy[i]=y[i];
@@ -127,9 +136,7 @@ return nextPos;
     attron(COLOR_PAIR(3));
     addch(ACS_BOARD);
     attroff(COLOR_PAIR(3));
-
   refresh();
-
 }
 */
 }
