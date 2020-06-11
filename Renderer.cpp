@@ -18,7 +18,7 @@ void Renderer::Init(){
     bkgd(COLOR_PAIR(4)); //background 지정
 
     //윈도우 속성 받아오기
-    std::ifstream inStream("Screen.txt");
+    std::ifstream inStream("Screen");
     if(!inStream.is_open()){
         printw("Error\n");
         endwin();
@@ -92,52 +92,70 @@ void Renderer::DrawMap(Stage& stage){
 
 
 void Renderer::DrawSnake(Snake& snake){
-    
-    //뱀을 그릴 위치와 뱀의 연결된 다음 방향 
-    Position drawPos = snake.head.Pos;
-    Direction nextPos = snake.head.Dir;
+    num++;      //num을 없애고 아래 부분에서도 num이 없다는 가정하에
+                // 코드를 짜게되면 처음에 시작할때 몸통이 출력이 안되서요.
+                //그래서 맨 처음 시작할때 머리, 몸통, 꼬리를 다 출력하기 위해서
+                //  첫 1회만 따로 구분하도록 한것입니다
+                //설명이 부족하다면 연락주시면 감사하겠습니다.
+    //뱀을 그릴 위치와 뱀의 연결된 다음 방향
+    Direction nextPos = snake.head.Dir; //방향
 
-    for(int i=0;i<snake.length;i++) //뱀 만들기
-    {
-        //헤드일 경우
-        if(drawPos.x == snake.head.Pos.x && drawPos.y == snake.head.Pos.y){
-            attron(COLOR_PAIR(2));
-            mvaddch(drawPos.y, drawPos.x, ACS_CKBOARD);
-            attroff(COLOR_PAIR(2));
-        }
-        //꼬리일 경우
-        else if((i + 1) == snake.length){
-            attron(COLOR_PAIR(1));
-            mvaddch(drawPos.y, drawPos.x, ACS_CKBOARD);
-            attroff(COLOR_PAIR(1));
-        }
-        //나머지 몸 부분
-        else{
-            mvaddch(drawPos.y, drawPos.x, ACS_CKBOARD);
-        }
-
-        //뱀의 다음을 그릴 위치 결정
+    for(int i=0;i<snake.length;i++){  //이 과정을 통해 이동하기 이전의 뱀의 좌표를
+      snake.savesp[i] = snake.sp[i];  // savesp에 넣습니다
+    }
+    for(int i=0;i<snake.length;i++){
+      if(i==0){                     //머리부분
         switch(nextPos){
             case Direction::UP:
-            drawPos.y += 1;
+            snake.sp[i].y -= 1;
+            attron(COLOR_PAIR(2));
+            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
+            attroff(COLOR_PAIR(2));
             break;
 
             case Direction::RIGHT:
-            drawPos.x -= 1;
+            snake.sp[i].x += 1;
+            attron(COLOR_PAIR(2));
+            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
+            attroff(COLOR_PAIR(2));
             break;
 
             case Direction::LEFT:
-            drawPos.x += 1;
+            snake.sp[i].x -= 1;
+            attron(COLOR_PAIR(2));
+            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
+            attroff(COLOR_PAIR(2));
             break;
 
             case Direction::DOWN:
-            drawPos.y -= 1;
+            snake.sp[i].y += 1;
+            attron(COLOR_PAIR(2));
+            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
+            attroff(COLOR_PAIR(2));
             break;
         }
-        
-    }
-}
+      }
+      else if(i!=0 && i!=snake.length-1){   //몸통 부분
+        snake.sp[i] = snake.savesp[i-1];
+        mvaddch(snake.sp[i].y, snake.sp[i].x, ACS_CKBOARD);
 
+      }
+      else if(i==snake.length-1){           //꼬리 부분
+        if(num==1){                 //위에서 말씀드린 num을 쓰는 곳입니다.
+          attron(COLOR_PAIR(1));    //첫 시작할때만 강제로 좌표를 설정해서
+          mvaddch(10, 9, ACS_CKBOARD);  // 몸통을 출력하도록 합니다.
+          attroff(COLOR_PAIR(1));
+        }
+        else if(num!=1){
+        snake.sp[i] = snake.savesp[i-1];
+        attron(COLOR_PAIR(1));
+        mvaddch(snake.sp[i].y, snake.sp[i].x, ACS_CKBOARD);
+        attroff(COLOR_PAIR(1));
+      }
+      }
+    }
+
+}
 void Renderer::DrawBox(WINDOW* win){
     box(win, 0, 0);
     wbkgd(win, COLOR_PAIR(1)); //백그라운드 컬러도 지정
@@ -146,7 +164,7 @@ void Renderer::DrawBox(WINDOW* win){
 
 void Renderer::PrintSystemMessage(const char* str){
     WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
-    
+
     wattron(sysWin, COLOR_PAIR(3));
     wprintw(sysWin, str);
     wattroff(sysWin, COLOR_PAIR(3));
@@ -157,7 +175,7 @@ void Renderer::PrintSystemMessage(const char* str){
 
 void Renderer::PrintSystemMessage(std::string str){
     WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
-    
+
     wattron(sysWin, COLOR_PAIR(3));
     wprintw(sysWin, str.c_str());
     wattroff(sysWin, COLOR_PAIR(3));
