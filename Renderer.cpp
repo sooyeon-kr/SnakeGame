@@ -18,7 +18,7 @@ void Renderer::Init(){
     bkgd(COLOR_PAIR(4)); //background 지정
 
     //윈도우 속성 받아오기
-    std::ifstream inStream("Screen");
+    std::ifstream inStream("Screen.txt");
     if(!inStream.is_open()){
         printw("Error\n");
         endwin();
