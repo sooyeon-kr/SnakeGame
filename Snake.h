@@ -41,6 +41,7 @@ public:
     void Die(){isLive = false;}
 
     Direction GetCurDirection(){return head.Dir;}
+    int GetSnakeLength(){return body.size() + 1;}
     bool IsAlive(){return isLive;}
 
 public:
@@ -49,7 +50,6 @@ public:
 
     DPosition head; //뱀의 머리의 방향값과 좌표값을 가지고 있음
     std::list<Position> body;
-    int length = 3; //뱀의 초기 길이
     bool isLive = true; //뱀이 죽었는지 살았는지 체크
 };
 

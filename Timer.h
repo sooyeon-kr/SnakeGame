@@ -10,9 +10,6 @@ public:
     //초기화
     void Init();
 
-    //타이머 작동
-    void StartTimer();
-
     //타이머 리셋
     void ResetTimer();
 
@@ -21,6 +18,9 @@ public:
 
     //델타타임가져오는 함수
     float GetDeltaTime();
+
+    //경과시간을 리턴해주는 함수
+    float GetFlowTime();
 
 
 private:
@@ -34,5 +34,6 @@ private:
     unsigned long prevTime;
     unsigned long endTime;
     unsigned long delTime;
+
 };
 #endif

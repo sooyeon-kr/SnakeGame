@@ -11,12 +11,16 @@ void Renderer::Init(){
 	curs_set(0); // 커서 표시X
 
     start_color(); //color적용시 꼭 필요,터미널에서 지원되는 모든 색들을 초기화해서 준비
-    init_color(COLOR_WHITE, 1000,1000,1000);
-    init_pair((int)TileType::Wall, COLOR_RED, COLOR_WHITE); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
-    init_pair((int)TileType::ImmuneWall, COLOR_BLUE, COLOR_WHITE);
-    init_pair((int)TileType::Snake_Head, COLOR_CYAN, COLOR_WHITE);
-    init_pair((int)TileType::Snake_Body, COLOR_YELLOW, COLOR_WHITE);
-    init_pair((int)TileType::Snake_Tail, COLOR_MAGENTA, COLOR_WHITE);
+    init_color((int)TileType::Size + 1, 1000,1000,1000);
+    init_color((short)TileType::Item_Growth, 600, 400, 200);
+    init_color((short)TileType::Item_Poison, 20, 40, 20);
+    init_pair((int)TileType::Wall, COLOR_RED, (int)TileType::Size + 1); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
+    init_pair((int)TileType::ImmuneWall, COLOR_BLUE, (int)TileType::Size + 1);
+    init_pair((int)TileType::Snake_Head, COLOR_CYAN, (int)TileType::Size + 1);
+    init_pair((int)TileType::Snake_Body, COLOR_YELLOW, (int)TileType::Size + 1);
+    init_pair((int)TileType::Snake_Tail, COLOR_MAGENTA, (int)TileType::Size + 1);
+    init_pair((int)TileType::Item_Growth, (short)TileType::Item_Growth, (int)TileType::Size + 1);
+    init_pair((int)TileType::Item_Poison, (short)TileType::Item_Poison, (int)TileType::Size + 1);
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
 
@@ -44,25 +48,13 @@ void Renderer::Init(){
     }
 }
 
-
-void Renderer::Draw(int** buff){
-    Present(buff);
+void Renderer::DrawUI(){
     DrawBox(windows[(int)WindowType::SCORE]);
     DrawBox(windows[(int)WindowType::MISSION]);
 }
-
-void Renderer::Refresh(){
-    refresh();
-}
-
-void Renderer::DrawBox(WINDOW* win){
-    box(win, 0, 0);
-    wbkgd(win, COLOR_PAIR(1)); //백그라운드 컬러도 지정
-}
-
-void Renderer::Present(int** scrBuffer){
-    move(0,0);
+void Renderer::Draw(int** scrBuffer){
     for(int i = 0; i < MAXROW; i++){
+        move(i, 0);
         for(int k = 0; k < MAXCOL; k++){
             switch(scrBuffer[i][k]){
                 case (int)TileType::Blank:
@@ -100,10 +92,33 @@ void Renderer::Present(int** scrBuffer){
                 addch(ACS_CKBOARD);
                 attroff(COLOR_PAIR((int)TileType::Snake_Tail));
                 break;
+
+                case (int)TileType::Item_Growth:
+                attron(COLOR_PAIR((int)TileType::Item_Growth));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Item_Growth));
+                break;
+                
+                case (int)TileType::Item_Poison:
+                attron(COLOR_PAIR((int)TileType::Item_Poison));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Item_Poison));
+                break;
             }
         }
-        printw("\n");
     }
+}
+
+void Renderer::Refresh(){
+    refresh();
+    for(int i = 0; i < (int)WindowType::SIZE; i++){
+        wrefresh(windows[i]);
+    }
+}
+
+void Renderer::DrawBox(WINDOW* win){
+    box(win, 0, 0);
+    wbkgd(win, COLOR_PAIR(1)); //백그라운드 컬러도 지정
 }
 
 void Renderer::PrintSystemMessage(const char* str){
@@ -136,6 +151,14 @@ void Renderer::PrintScoreMessage(const char* str){
     refresh();
 }
 
+void Renderer::PrintMissionMessage(const char* str){
+    wmove(windows[(int)WindowType::MISSION], 0, 0);
+    wattron(windows[(int)WindowType::MISSION], COLOR_PAIR(3));
+    wprintw(windows[(int)WindowType::MISSION], str);
+    wattroff(windows[(int)WindowType::MISSION], COLOR_PAIR(3));
+    refresh();
+}
 void Renderer::End(){
     endwin();
 }
+

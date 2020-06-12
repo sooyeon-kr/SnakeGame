@@ -31,8 +31,6 @@ public:
     int GetRow() { return row; }
     int GetColumn() { return col; }
 
-    bool CheckWall(int x, int y);
-
 
     //멤버변수
 private:

@@ -22,6 +22,10 @@ float Timer::GetDeltaTime(){
     return (float)delTime/(CLOCKS_PER_SEC);
 }
 
+float Timer::GetFlowTime(){
+    float time = GetTickCount();
+    return (time - startTime)/(CLOCKS_PER_SEC);
+}
 unsigned int Timer::GetTickCount()
 {
      return clock();
