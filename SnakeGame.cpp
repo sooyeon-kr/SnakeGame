@@ -34,7 +34,7 @@ bool SnakeGame::Play(){
         mGameTimer.UpdateTime();
         tickDt += mGameTimer.GetDeltaTime();
 
-        if(tickDt >= 0.5f){
+        if(tickDt >= 0.2f){
             totalDt += tickDt;
             tickDt = 0.0f;
              //입력받은 키를 b에 저장
@@ -76,11 +76,11 @@ bool SnakeGame::Play(){
                 }
             }
 
-            //뱀의 다음 방향 계산
-            DPosition nextPos = mSnake.NextSnakePos(nextDir);
+            //뱀 머리의 다음 좌표 계산
+            DPosition nextHeadPos = mSnake.NextSnakeHeadPos(nextDir);
 
             //다음방향 좌표를 이용해서 충돌 계산하거나 뱀이 살아있는 상태인지 체크
-            if(!(mStage.CheckWall(nextPos.Pos.x, nextPos.Pos.y)) || !mSnake.IsAlive()){
+            if(!(mStage.CheckWall(nextHeadPos.Pos.x, nextHeadPos.Pos.y)) || !mSnake.IsAlive()){
                 renderer.PrintSystemMessage("Game Over\nRetry Y/N");
 
                 if(IsGameOver()){
@@ -96,8 +96,8 @@ bool SnakeGame::Play(){
                 }
             }
 
-            //충돌 아닌 경우 뱀의 현재위치 업데이트
-            mSnake.UpdateSnakePos(nextPos);
+            //충돌 아닌 경우 뱀의 좌표 업데이트
+            mSnake.UpdateSnakePos(nextHeadPos);
 
             //그리기
             renderer.Draw(mStage, mSnake);

@@ -92,67 +92,23 @@ void Renderer::DrawMap(Stage& stage){
 
 
 void Renderer::DrawSnake(Snake& snake){
-    num++;      //num을 없애고 아래 부분에서도 num이 없다는 가정하에
-                // 코드를 짜게되면 처음에 시작할때 몸통이 출력이 안되서요.
-                //그래서 맨 처음 시작할때 머리, 몸통, 꼬리를 다 출력하기 위해서
-                //  첫 1회만 따로 구분하도록 한것입니다
-                //설명이 부족하다면 연락주시면 감사하겠습니다.
-    //뱀을 그릴 위치와 뱀의 연결된 다음 방향
-    Direction nextPos = snake.head.Dir; //방향
+    //헤드 그리기
+    attron(COLOR_PAIR(2));
+    mvaddch(snake.head.Pos.y, snake.head.Pos.x,ACS_CKBOARD);
+    attroff(COLOR_PAIR(2));
 
-    for(int i=0;i<snake.length;i++){  //이 과정을 통해 이동하기 이전의 뱀의 좌표를
-      snake.savesp[i] = snake.sp[i];  // savesp에 넣습니다
-    }
-    for(int i=0;i<snake.length;i++){
-      if(i==0){                     //머리부분
-        switch(nextPos){
-            case Direction::UP:
-            snake.sp[i].y -= 1;
-            attron(COLOR_PAIR(2));
-            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
-            attroff(COLOR_PAIR(2));
-            break;
-
-            case Direction::RIGHT:
-            snake.sp[i].x += 1;
-            attron(COLOR_PAIR(2));
-            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
-            attroff(COLOR_PAIR(2));
-            break;
-
-            case Direction::LEFT:
-            snake.sp[i].x -= 1;
-            attron(COLOR_PAIR(2));
-            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
-            attroff(COLOR_PAIR(2));
-            break;
-
-            case Direction::DOWN:
-            snake.sp[i].y += 1;
-            attron(COLOR_PAIR(2));
-            mvaddch(snake.sp[i].y,snake.sp[i].x,ACS_CKBOARD);
-            attroff(COLOR_PAIR(2));
+    //바디 그리기
+    int cnt = 0;
+    for(auto it = snake.body.begin(); it != snake.body.end(); it++){
+        cnt++;
+        if(cnt == snake.body.size()){
+            attron(COLOR_PAIR(1)); 
+            mvaddch(it->y, it->x, ACS_CKBOARD); 
+            attroff(COLOR_PAIR(1));
             break;
         }
-      }
-      else if(i!=0 && i!=snake.length-1){   //몸통 부분
-        snake.sp[i] = snake.savesp[i-1];
-        mvaddch(snake.sp[i].y, snake.sp[i].x, ACS_CKBOARD);
 
-      }
-      else if(i==snake.length-1){           //꼬리 부분
-        if(num==1){                 //위에서 말씀드린 num을 쓰는 곳입니다.
-          attron(COLOR_PAIR(1));    //첫 시작할때만 강제로 좌표를 설정해서
-          mvaddch(10, 9, ACS_CKBOARD);  // 몸통을 출력하도록 합니다.
-          attroff(COLOR_PAIR(1));
-        }
-        else if(num!=1){
-        snake.sp[i] = snake.savesp[i-1];
-        attron(COLOR_PAIR(1));
-        mvaddch(snake.sp[i].y, snake.sp[i].x, ACS_CKBOARD);
-        attroff(COLOR_PAIR(1));
-      }
-      }
+        mvaddch(it->y, it->x, ACS_CKBOARD); 
     }
 
 }

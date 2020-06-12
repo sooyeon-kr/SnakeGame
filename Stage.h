@@ -12,7 +12,7 @@ class Stage
 {
     //생성자
 public:
-    Stage();
+    Stage() = default;
     ~Stage();
 
 

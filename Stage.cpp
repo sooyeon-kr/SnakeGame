@@ -53,7 +53,7 @@ bool Stage::CheckWall(int x, int y){
 
     //화면 안에서 벽에서 부딪힐 때
     if(map[y][x] == (int)TileType::ImmuneWall || map[y][x] == (int)TileType::Wall)
-    return false;
+        return false;
     else if(map[y][x] == (int)TileType::Blank)
-    return true;
+        return true;
 }

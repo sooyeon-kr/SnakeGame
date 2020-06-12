@@ -47,8 +47,8 @@ private:
 private:
     WINDOW* windows[4]; //서브 윈도우 배열
     int subWinProperty[(int)WindowType::SIZE][4];
-    int num=0;
-
+    
+    char** scrBuffer;
 };
 
 
