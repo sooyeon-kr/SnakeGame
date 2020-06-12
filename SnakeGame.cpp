@@ -11,6 +11,11 @@ void SnakeGame::Init(){
 
     mGameTimer.Init();
     NonBlocking();
+
+    //화면 버퍼 초기화
+    scrBuffer = new int*[MAXROW];
+    for(int i = 0; i < MAXROW; i++)
+        scrBuffer[i] = new int[MAXCOL];
 }
 
 void SnakeGame::Blocking(){
@@ -45,8 +50,6 @@ bool SnakeGame::Play(){
                 renderer.PrintSystemMessage("Error Not EAGAIN");
                 return false;
             }
-
-
 
             Direction nextDir = mSnake.GetCurDirection();
 
@@ -100,7 +103,9 @@ bool SnakeGame::Play(){
             mSnake.UpdateSnakePos(nextHeadPos);
 
             //그리기
-            renderer.Draw(mStage, mSnake);
+            WriteStageToScreen(mStage);
+            WriteSnakeToScreen(mSnake);
+            renderer.Draw(scrBuffer);
 
             char str[256] = {0,};
             sprintf(str, "totalDt = %0.2f", totalDt);
@@ -114,6 +119,12 @@ bool SnakeGame::Play(){
 
 void SnakeGame::Exit(){
     renderer.End();
+
+    //화면버퍼 없애기
+    for(int i = 0; i < MAXROW; i++)
+        delete[] scrBuffer[i];
+
+    delete[] scrBuffer;
 }
 
 void SnakeGame::RestartGame(){
@@ -124,6 +135,35 @@ void SnakeGame::RestartGame(){
     mSnake.Init();
 
     NonBlocking();
+}
+
+void SnakeGame::WriteStageToScreen(Stage& stage){
+    //스테이지에 대한 정보를 받아옴
+    auto map = stage.GetMap();
+    int row = stage.GetRow();
+    int col = stage.GetColumn();
+
+    //벽 출력
+    for(int i=0; i<row; i++)
+        for(int k=0; k<col; k++)
+            scrBuffer[i][k] = map[i][k];
+}
+
+void SnakeGame::WriteSnakeToScreen(Snake& snake){
+    //헤드 그리기
+    scrBuffer[snake.head.Pos.y][snake.head.Pos.x] = (int)TileType::Snake_Head;
+
+    //바디 그리기
+    int cnt = 0;
+    for(auto it = snake.body.begin(); it != snake.body.end(); it++){
+        cnt++;
+        if(cnt == snake.body.size()){
+            scrBuffer[it->y][it->x] = (int)TileType::Snake_Tail;
+            break;
+        }
+
+        scrBuffer[it->y][it->x] = (int)TileType::Snake_Body;
+    }
 }
 
 bool SnakeGame::IsGameOver(){

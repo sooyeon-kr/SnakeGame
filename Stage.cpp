@@ -19,7 +19,6 @@ bool Stage::loadStage(char* filename)
     mapFile.open(filename);
     if(mapFile.fail())
     {
-        
         return false;
     }
 

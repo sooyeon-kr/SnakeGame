@@ -1,6 +1,11 @@
 #include "Renderer.h"
 #include "Timer.h"
 
+struct Item{
+    TileType ItemType;
+    Position Pos;
+};
+
 class SnakeGame{
 
 public:
@@ -15,6 +20,9 @@ public:
 private:
     void RestartGame();
 
+    void WriteStageToScreen(Stage& stage);
+    void WriteSnakeToScreen(Snake& snake);
+
     bool IsGameOver();
     void Blocking();
     void NonBlocking();
@@ -24,4 +32,6 @@ private:
     Renderer renderer;
     Snake mSnake;
     Timer mGameTimer;
+    int** scrBuffer;    //스크린용 버퍼
+
 };

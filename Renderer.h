@@ -8,6 +8,8 @@
 #include <vector>
 #include <unordered_map>
 
+#define MAXROW 30
+#define MAXCOL 30
 enum class WindowType{
     SCORE,
     MISSION,
@@ -28,27 +30,23 @@ public:
     void Init();
 
     //스테이지와 뱀을 그리는 함수
-    void Draw(Stage& stage, Snake& snake);
+    void Draw(int** buff);
     void Refresh();
-
 
     void End();
 
     void PrintSystemMessage(const char* str);
     void PrintSystemMessage(std::string str);
-
     void PrintScoreMessage(const char* str);
 
 private:
-    void DrawMap(Stage& stage);
-    void DrawSnake(Snake& snake);
+    void Present(int** scrBuffer);
     void DrawBox(WINDOW* win);
 
 private:
     WINDOW* windows[4]; //서브 윈도우 배열
     int subWinProperty[(int)WindowType::SIZE][4];
-    
-    char** scrBuffer;
+
 };
 
 

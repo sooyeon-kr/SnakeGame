@@ -1,11 +1,18 @@
 #ifndef __Stage__H__
 #define __Stage__H__
 
-//Wall 종류
+
+//타일 종류
 enum class TileType{
     Blank,
     Wall,
-    ImmuneWall
+    ImmuneWall,
+    Snake_Head,
+    Snake_Body,
+    Snake_Tail,
+    Item_Growth,
+    Item_Poison,
+    Size
 };
 
 class Stage

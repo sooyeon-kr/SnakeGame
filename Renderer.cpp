@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include <fstream>
+#include <memory.h>
 
 void Renderer::Init(){
     initscr(); //ncurses 초기화
@@ -11,11 +12,13 @@ void Renderer::Init(){
 
     start_color(); //color적용시 꼭 필요,터미널에서 지원되는 모든 색들을 초기화해서 준비
     init_color(COLOR_WHITE, 1000,1000,1000);
-    init_pair(1, COLOR_RED, COLOR_WHITE); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
-    init_pair(2, COLOR_YELLOW, COLOR_WHITE);
-    init_pair(3, COLOR_CYAN, COLOR_WHITE);
-    init_pair(4, COLOR_BLUE, COLOR_BLACK);
-    bkgd(COLOR_PAIR(4)); //background 지정
+    init_pair((int)TileType::Wall, COLOR_RED, COLOR_WHITE); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
+    init_pair((int)TileType::ImmuneWall, COLOR_BLUE, COLOR_WHITE);
+    init_pair((int)TileType::Snake_Head, COLOR_CYAN, COLOR_WHITE);
+    init_pair((int)TileType::Snake_Body, COLOR_YELLOW, COLOR_WHITE);
+    init_pair((int)TileType::Snake_Tail, COLOR_MAGENTA, COLOR_WHITE);
+    init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
+    bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
 
     //윈도우 속성 받아오기
     std::ifstream inStream("Screen.txt");
@@ -42,9 +45,8 @@ void Renderer::Init(){
 }
 
 
-void Renderer::Draw(Stage& stage, Snake& snake){
-    DrawMap(stage);
-    DrawSnake(snake);
+void Renderer::Draw(int** buff){
+    Present(buff);
     DrawBox(windows[(int)WindowType::SCORE]);
     DrawBox(windows[(int)WindowType::MISSION]);
 }
@@ -53,70 +55,56 @@ void Renderer::Refresh(){
     refresh();
 }
 
-void Renderer::DrawMap(Stage& stage){
-    //스테이지에 대한 정보를 받아옴
-    auto map = stage.GetMap();
-    int row = stage.GetRow();
-    int col = stage.GetColumn();
-
-
-    //커서 옮김
-    move( 0,0);
-
-    //벽 출력
-    for(int i=0; i<row; i++)
-    {
-        for(int k=0; k<col; k++)
-        {
-            switch(map[i][k]){
-                case (int)TileType::Wall:
-                    attron(COLOR_PAIR(1));
-                    addch(ACS_CKBOARD);
-                    attroff(COLOR_PAIR(1));
-                    break;
-                case (int)TileType::ImmuneWall:
-                    attron(COLOR_PAIR(2));
-                    addch(ACS_CKBOARD);
-                    attroff(COLOR_PAIR(2));
-                    break;
-                case (int)TileType::Blank:
-                    attron(COLOR_PAIR(3));
-                    addch(ACS_CKBOARD);
-                    attroff(COLOR_PAIR(3));
-                    break;
-            }
-        }
-        printw("\n");
-    }
-}
-
-
-void Renderer::DrawSnake(Snake& snake){
-    //헤드 그리기
-    attron(COLOR_PAIR(2));
-    mvaddch(snake.head.Pos.y, snake.head.Pos.x,ACS_CKBOARD);
-    attroff(COLOR_PAIR(2));
-
-    //바디 그리기
-    int cnt = 0;
-    for(auto it = snake.body.begin(); it != snake.body.end(); it++){
-        cnt++;
-        if(cnt == snake.body.size()){
-            attron(COLOR_PAIR(1)); 
-            mvaddch(it->y, it->x, ACS_CKBOARD); 
-            attroff(COLOR_PAIR(1));
-            break;
-        }
-
-        mvaddch(it->y, it->x, ACS_CKBOARD); 
-    }
-
-}
 void Renderer::DrawBox(WINDOW* win){
     box(win, 0, 0);
     wbkgd(win, COLOR_PAIR(1)); //백그라운드 컬러도 지정
 }
 
+void Renderer::Present(int** scrBuffer){
+    move(0,0);
+    for(int i = 0; i < MAXROW; i++){
+        for(int k = 0; k < MAXCOL; k++){
+            switch(scrBuffer[i][k]){
+                case (int)TileType::Blank:
+                // attron(COLOR_PAIR(1));
+                addch(ACS_CKBOARD);
+                // attroff(COLOR_PAIR(1));
+                break;
+
+                case (int)TileType::Wall:
+                attron(COLOR_PAIR((int)TileType::Wall));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Wall));
+                break;
+
+                case (int)TileType::ImmuneWall:
+                attron(COLOR_PAIR((int)TileType::ImmuneWall));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::ImmuneWall));
+                break;
+
+                case (int)TileType::Snake_Head:
+                attron(COLOR_PAIR((int)TileType::Snake_Head));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Snake_Head));
+                break;
+
+                case (int)TileType::Snake_Body:
+                attron(COLOR_PAIR((int)TileType::Snake_Body));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Snake_Body));
+                break;
+
+                case (int)TileType::Snake_Tail:
+                attron(COLOR_PAIR((int)TileType::Snake_Tail));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Snake_Tail));
+                break;
+            }
+        }
+        printw("\n");
+    }
+}
 
 void Renderer::PrintSystemMessage(const char* str){
     WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
