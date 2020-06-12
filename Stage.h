@@ -12,8 +12,13 @@ class Stage
 {
     //생성자
 public:
+    Stage();
+    ~Stage();
+
+
+public:
     //메소드
-    bool loadStage(char* filename);
+    bool loadStage(char* filename); //Stage의 Map 2차원 배열 동적할당
 
     int** GetMap() { return map; }
     int GetRow() { return row; }
@@ -24,11 +29,8 @@ public:
 
     //멤버변수
 private:
-    int length=3;
-
     int row = -1;
     int col = -1;
-
     int **map = nullptr;
 };
 

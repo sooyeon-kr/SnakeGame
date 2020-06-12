@@ -2,6 +2,16 @@
 #include "Stage.h"
 using namespace std;
 
+Stage::~Stage(){
+    if(map != nullptr){
+        for(int i=0; i<row; i++)
+            delete map[i];
+        delete[] map;
+
+        map = nullptr;
+    }
+}
+
 /*stage 로드 하는 함수*/
 bool Stage::loadStage(char* filename)
 {
@@ -9,6 +19,7 @@ bool Stage::loadStage(char* filename)
     mapFile.open(filename);
     if(mapFile.fail())
     {
+        
         return false;
     }
 
