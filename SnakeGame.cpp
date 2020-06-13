@@ -100,9 +100,13 @@ bool SnakeGame::Play(){
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
+                //아이템 없애기
+                DestructItem(mSnake.head.Pos);
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
+                //아이템 없애기
+                DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
                     mSnake.Die();
             }else if(t == TileType::Blank){
@@ -269,6 +273,15 @@ void SnakeGame::DestructItem(){
         }
     }
     */
+}
+void SnakeGame::DestructItem(Position pos){
+    for(auto it=Items.begin(); it!=Items.end();)
+    {
+        if(it->Pos.x == pos.x && it->Pos.y == pos.y)
+            Items.erase(it++);
+        else
+            it++;
+    }
 }
 
 Position SnakeGame::GetRandomPos(){
