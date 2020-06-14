@@ -558,17 +558,7 @@ bool SnakeGame::Play(){
         char str2[256] = {0,};
         sprintf(str2, "Mission");
         renderer.PrintMissionMessage(str2);
-        wmove(renderer.windows[1],1,1);
-        wprintw(renderer.windows[1],"Mission Length = %d / 5 ( )",MB);
-        wmove(renderer.windows[1],3,1);
-        wprintw(renderer.windows[1],"Mission G-Item = %d / 5 ( )",MI);
-        wmove(renderer.windows[1],5,1);
-        wprintw(renderer.windows[1],"Mission P-Item = %d / 3 ( )",MP);
-        wmove(renderer.windows[1],7,1);
-        wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
-        wmove(renderer.windows[1],9,1);
-        wprintw(renderer.windows[1],"SCORE = %d",SCORE);
-
+        //테스트 빨리할려고 각 항목 1만 달성해도 ok 
         if(MB>=1){
           wmove(renderer.windows[1],1,1);
           wprintw(renderer.windows[1],"Mission Length = %d / 5 (OK)",MB);
@@ -577,6 +567,7 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],1,1);
           wprintw(renderer.windows[1],"Mission Length = %d / 5 ( )",MB);
         }
+        
         if(MI >= 1){
           wmove(renderer.windows[1],3,1);
           wprintw(renderer.windows[1],"Mission G-Item = %d / 5 (OK)",MI);
@@ -585,6 +576,7 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],3,1);
           wprintw(renderer.windows[1],"Mission G-Item = %d / 5 ( )",MI);
         }
+        
         if(MP >= 1){
           wmove(renderer.windows[1],5,1);
           wprintw(renderer.windows[1],"Mission P-Item = %d / 3 (OK)",MP);
@@ -593,6 +585,7 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],5,1);
           wprintw(renderer.windows[1],"Mission P-Item = %d / 3 ( )",MP);
         }
+        
         if(MG>=1){
           wmove(renderer.windows[1],7,1);
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 (OK)",MG);
@@ -601,8 +594,9 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],7,1);
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
         }
-        if((MB==1) && (MI==1) && (MP==1) && (MG==1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
-          CLEAR+=1;
+        
+        if((MB==1) && (MI==1) && (MP==1) && (MG==1)){ //테스트 빨리할려고 각각 한번만 달성하면 되도록했습니다.
+          CLEAR+=1;                 //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
           GameClear();
           break;
         }
