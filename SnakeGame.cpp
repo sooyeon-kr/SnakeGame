@@ -59,15 +59,15 @@ bool SnakeGame::Play(){
 
     float rTime = 5.0f;
     float itemDT = 0.0f;
-    int B=3;
-    int I=0;
-    int P=0;
-    int G=0;
-    int MB=0;
-    int MI=0;
-    int MP=0;
-    int MG=0;
-    int SCORE=0;
+    int B=3;    //현재길이
+    int I=0;    //아이템 먹은 횟수
+    int P=0;    //P 아이템 먹은 횟수
+    int G=0;    //게이트 사용 횟수
+    int MB=0;   //목표 길이
+    int MI=0;   //목표 아이템 먹는 횟수
+    int MP=0;   //목표 p아이템 먹는 횟수
+    int MG=0;   //목표 게이트 사용 횟수
+    int SCORE=0;    //점수
 
     while(1){
         renderer.DrawUI();
@@ -123,9 +123,9 @@ bool SnakeGame::Play(){
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
-                B++;
-                MB++;
-                I++;
+                B++;    
+                MB++;   
+                I++;    
                 MI++;
                 SCORE +=10;
                 DestructItem(mSnake.head.Pos);
