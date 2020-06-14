@@ -9,8 +9,18 @@
 void SnakeGame::Init(){
 
     renderer.Init();
-
-    mStage.loadStage("data/stage/stage1.txt");
+    if(CLEAR==0){
+    mStage.loadStage("stage1");
+  }
+  else if(CLEAR==1){
+    mStage.loadStage("stage2");
+  }
+  else if(CLEAR==2){
+    mStage.loadStage("stage3");
+  }
+  else if(CLEAR==3){
+    mStage.loadStage("stage4");
+  }
     mSnake.Init();
 
     //Items 초기화
@@ -49,6 +59,15 @@ bool SnakeGame::Play(){
 
     float rTime = 5.0f;
     float itemDT = 0.0f;
+    int B=3;
+    int I=0;
+    int P=0;
+    int G=0;
+    int MB=0;
+    int MI=0;
+    int MP=0;
+    int MG=0;
+    int SCORE=0;
 
     while(1){
         renderer.DrawUI();
@@ -58,6 +77,7 @@ bool SnakeGame::Play(){
         if(updateDT >= 0.2f){
             totalDt += updateDT;
             itemDT += updateDT;
+            gateT += updateDT;
             updateDT = 0.0f;
              //입력받은 키를 b에 저장
             int key = getch();
@@ -103,12 +123,19 @@ bool SnakeGame::Play(){
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
-                //아이템 없애기
+                B++;
+                MB++;
+                I++;
+                MI++;
+                SCORE +=10;
                 DestructItem(mSnake.head.Pos);
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
-                //아이템 없애기
+                P++;
+                MB--;
+                MP++;
+                SCORE -=10;
                 DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
                     mSnake.Die();
@@ -120,6 +147,9 @@ bool SnakeGame::Play(){
               }
 
               else if(t== TileType::Gate){
+                G++;
+                MG++;
+                SCORE+=10;
                 through+=1;
                 if(scrBuffer[gatey2-1][gatex2] == (int) TileType::Blank){
                   if(scrBuffer[gatey2+1][gatex2] == (int) TileType::Blank){
@@ -281,6 +311,9 @@ bool SnakeGame::Play(){
 
 
               else if(t== TileType::Gate2){
+                G++;
+                MG++;
+                SCORE+=10;
                 through+=1;
                 if(scrBuffer[gatey-1][gatex] == (int) TileType::Blank){
                   if(scrBuffer[gatey+1][gatex] == (int) TileType::Blank){
@@ -496,6 +529,7 @@ bool SnakeGame::Play(){
             itemDT = 0;
         }
         WriteItemToScreen();
+        if(gateT>5.0f){
         if(through==0){
           CreateGate();
         }
@@ -503,11 +537,75 @@ bool SnakeGame::Play(){
           through=0;  //머리가 게이트를 통과하면 +1, 꼬리가 게이트 통과하면 +1 시켜서 2되면 기존 게이트 없앱니다.
           gatenum=0;
         }
+      }
         WriteGate();
 
         char str[256] = {0,};
         sprintf(str, "totalDt = %0.2f", totalDt);
         renderer.PrintScoreMessage(str);
+        // char str2[256] = {0,};
+        // sprintf(str2, "Length = %d/ 15", B);
+        // renderer.PrintScoreMessage(str2);
+        wmove(renderer.windows[0],1,1);
+        wprintw(renderer.windows[0],"Length = %d / 15",B);
+        wmove(renderer.windows[0],3,1);
+        wprintw(renderer.windows[0],"G-Item = %d",I);
+        wmove(renderer.windows[0],5,1);
+        wprintw(renderer.windows[0],"P-Item = %d",P);
+        wmove(renderer.windows[0],7,1);
+        wprintw(renderer.windows[0],"Gate Usage = %d",G);
+
+        char str2[256] = {0,};
+        sprintf(str2, "Mission");
+        renderer.PrintMissionMessage(str2);
+        wmove(renderer.windows[1],1,1);
+        wprintw(renderer.windows[1],"Mission Length = %d / 5 ( )",MB);
+        wmove(renderer.windows[1],3,1);
+        wprintw(renderer.windows[1],"Mission G-Item = %d / 5 ( )",MI);
+        wmove(renderer.windows[1],5,1);
+        wprintw(renderer.windows[1],"Mission P-Item = %d / 3 ( )",MP);
+        wmove(renderer.windows[1],7,1);
+        wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
+        wmove(renderer.windows[1],9,1);
+        wprintw(renderer.windows[1],"SCORE = %d",SCORE);
+
+        if(MB>=1){
+          wmove(renderer.windows[1],1,1);
+          wprintw(renderer.windows[1],"Mission Length = %d / 5 (OK)",MB);
+        }
+        else{
+          wmove(renderer.windows[1],1,1);
+          wprintw(renderer.windows[1],"Mission Length = %d / 5 ( )",MB);
+        }
+        if(MI >= 1){
+          wmove(renderer.windows[1],3,1);
+          wprintw(renderer.windows[1],"Mission G-Item = %d / 5 (OK)",MI);
+        }
+        else{
+          wmove(renderer.windows[1],3,1);
+          wprintw(renderer.windows[1],"Mission G-Item = %d / 5 ( )",MI);
+        }
+        if(MP >= 1){
+          wmove(renderer.windows[1],5,1);
+          wprintw(renderer.windows[1],"Mission P-Item = %d / 3 (OK)",MP);
+        }
+        else{
+          wmove(renderer.windows[1],5,1);
+          wprintw(renderer.windows[1],"Mission P-Item = %d / 3 ( )",MP);
+        }
+        if(MG>=1){
+          wmove(renderer.windows[1],7,1);
+          wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 (OK)",MG);
+        }
+        else{
+          wmove(renderer.windows[1],7,1);
+          wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
+        }
+        if((MB==1) && (MI==1) && (MP==1) && (MG==1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
+          CLEAR+=1;
+          GameClear();
+          break;
+        }
 
         renderer.Draw(scrBuffer);
 
@@ -530,7 +628,18 @@ void SnakeGame::RestartGame(){
     mGameTimer.ResetTimer();
 
     renderer.Init();
-    mStage.loadStage("data/stage/stage1.txt");
+    if(CLEAR==0){
+    mStage.loadStage("stage1");
+  }
+  else if(CLEAR==1){
+    mStage.loadStage("stage2");
+  }
+  else if(CLEAR==2){
+    mStage.loadStage("stage3");
+  }
+  else if(CLEAR==3){
+    mStage.loadStage("stage4");
+  }
     mSnake.Init();
 
     Items.clear();
@@ -581,6 +690,18 @@ void SnakeGame::WriteGate(){
     scrBuffer[gatey][gatex] = (int)TileType::Gate;
     scrBuffer[gatey2][gatex2] = (int)TileType::Gate2;
 
+}
+bool SnakeGame::GameClear(){
+  renderer.PrintSystemMessage("Clear!\nNext Stage? Y/N");
+  Blocking();
+  while(1){
+      int key = getch();
+      if(key == 'y' || (key + 32) == 'y'){
+          Init();
+      }else if(key == 'n' | (key + 32) == 'n'){
+
+      }
+  }
 }
 
 bool SnakeGame::IsGameOver(){
