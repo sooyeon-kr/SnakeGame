@@ -99,13 +99,17 @@ bool SnakeGame::Play(){
             DPosition nextHeadPos = mSnake.NextSnakeHeadPos(nextDir);
 
             //다음방향 좌표를 이용해서 충돌 계산하거나 타일정보에 따라 처리
-            TileType t = CheckBuffer(nextHeadPos.Pos.x, nextHeadPos.Pos.y);
+             TileType t = CheckBuffer(nextHeadPos.Pos.x, nextHeadPos.Pos.y);
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
+                //아이템 없애기
+                DestructItem(mSnake.head.Pos);
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
+                //아이템 없애기
+                DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
                     mSnake.Die();
             }else if(t == TileType::Blank){
@@ -113,7 +117,7 @@ bool SnakeGame::Play(){
                 mSnake.UpdateSnakePos(nextHeadPos);
             }else if(t == TileType::Wall || t == TileType::Snake_Body || t == TileType::Snake_Tail){
                 mSnake.Die();
-              }
+            }
 
               else if(t== TileType::Gate){
                 through+=1;
