@@ -10,7 +10,7 @@ void SnakeGame::Init(){
 
     renderer.Init();
 
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
     mSnake.Init();
 
     //Items 초기화
@@ -99,7 +99,7 @@ bool SnakeGame::Play(){
             DPosition nextHeadPos = mSnake.NextSnakeHeadPos(nextDir);
 
             //다음방향 좌표를 이용해서 충돌 계산하거나 타일정보에 따라 처리
-             TileType t = CheckBuffer(nextHeadPos.Pos.x, nextHeadPos.Pos.y);
+            TileType t = CheckBuffer(nextHeadPos.Pos.x, nextHeadPos.Pos.y);
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
@@ -117,7 +117,7 @@ bool SnakeGame::Play(){
                 mSnake.UpdateSnakePos(nextHeadPos);
             }else if(t == TileType::Wall || t == TileType::Snake_Body || t == TileType::Snake_Tail){
                 mSnake.Die();
-            }
+              }
 
               else if(t== TileType::Gate){
                 through+=1;
@@ -404,7 +404,7 @@ bool SnakeGame::Play(){
 
                 }
                 }
-                
+
                 else if(scrBuffer[gatey][gatex-1] == (int) TileType::Blank){
                   if(scrBuffer[gatey][gatex-1] == (int) TileType::Blank){
                     if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 오른쪽으로 진출
@@ -530,7 +530,7 @@ void SnakeGame::RestartGame(){
     mGameTimer.ResetTimer();
 
     renderer.Init();
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
     mSnake.Init();
 
     Items.clear();
@@ -619,7 +619,7 @@ void SnakeGame::CreateItem(){
 }
 
 void SnakeGame::CreateGate(){
-  if(gatenum == 0){ //게이트가 없으면
+  if(gatenum==0){ //게이트가 없으면
   while(1){
     gatex = rand()%30;
     gatey = rand()%30;
@@ -645,21 +645,33 @@ void SnakeGame::CreateGate(){
       else
       break;
     }
+
     }
     gatenum++; //gatenum이 2가 되므로 2개, 즉 한쌍만 만들어 지도록 합니다.
   }
-  else  //게이트가 아직 필드 내에 있으면 안만듭니다
-  return;
+}
+void SnakeGame::DestructItem(){
+    Items.pop_front();
+    /*
+    for(auto it=Items.begin(); it!=Items.end() ; it++)
+    {
+        if(it->isAlive==false)
+        {
+            Items.erase(it++);
+            break;
+        }
+    }
+    */
 }
 void SnakeGame::DestructItem(Position pos){
-     for(auto it=Items.begin(); it!=Items.end();)
-     {
-         if(it->Pos.x == pos.x && it->Pos.y == pos.y)
-             Items.erase(it++);
-         else
-             it++;
-     }
- }
+    for(auto it=Items.begin(); it!=Items.end();)
+    {
+      if(it->Pos.x == pos.x && it->Pos.y == pos.y)
+        Items.erase(it++);
+      else
+        it++;
+    }
+}
 
 Position SnakeGame::GetRandomPos(){
     std::vector<Position> candidate;
