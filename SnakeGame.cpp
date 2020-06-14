@@ -10,7 +10,7 @@ void SnakeGame::Init(){
 
     renderer.Init();
 
-    mStage.loadStage("stage1");
+    mStage.loadStage("data/stage/stage1.txt");
     mSnake.Init();
 
     //Items 초기화
@@ -526,7 +526,7 @@ void SnakeGame::RestartGame(){
     mGameTimer.ResetTimer();
 
     renderer.Init();
-    mStage.loadStage("stage1");
+    mStage.loadStage("data/stage/stage1.txt");
     mSnake.Init();
 
     Items.clear();
