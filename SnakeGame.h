@@ -39,6 +39,7 @@ private:
     void DestructItem();
     void DestructItem(Position pos);
     Position GetRandomPos();
+    bool GameClear();
 
     TileType CheckBuffer(int x, int y);
 
@@ -51,6 +52,8 @@ private:
   int through=0;  //한쌍의 게이트만 만들어지도록 하는 변수
   int tailx=0;  //게이트 지날때 좌표를 기억하는 함수
   int taily=0;
+  float gateT = 0.0f;
+  int CLEAR=0;
 
     Stage mStage;
     Renderer renderer;
