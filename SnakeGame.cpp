@@ -647,19 +647,15 @@ void SnakeGame::CreateGate(){
   else  //게이트가 아직 필드 내에 있으면 안만듭니다
   return;
 }
-void SnakeGame::DestructItem(){
-    Items.pop_front();
-    /*
-    for(auto it=Items.begin(); it!=Items.end() ; it++)
-    {
-        if(it->isAlive==false)
-        {
-            Items.erase(it++);
-            break;
-        }
-    }
-    */
-}
+void SnakeGame::DestructItem(Position pos){
+     for(auto it=Items.begin(); it!=Items.end();)
+     {
+         if(it->Pos.x == pos.x && it->Pos.y == pos.y)
+             Items.erase(it++);
+         else
+             it++;
+     }
+ }
 
 Position SnakeGame::GetRandomPos(){
     std::vector<Position> candidate;
