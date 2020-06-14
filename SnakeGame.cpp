@@ -10,16 +10,16 @@ void SnakeGame::Init(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("stage1");
+    mStage.loadStage("data/stage/stage1.txt");
   }
   else if(CLEAR==1){
-    mStage.loadStage("stage2");
+    mStage.loadStage("data/stage/stage2.txt");
   }
   else if(CLEAR==2){
-    mStage.loadStage("stage3");
+    mStage.loadStage("data/stage/stage3.txt");
   }
   else if(CLEAR==3){
-    mStage.loadStage("stage4");
+    mStage.loadStage("data/stage/stage4.txt");
   }
     mSnake.Init();
 
@@ -634,16 +634,16 @@ void SnakeGame::RestartGame(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("stage1");
+    mStage.loadStage("data/stage/stage1.txt");
   }
   else if(CLEAR==1){
-    mStage.loadStage("stage2");
+    mStage.loadStage("data/stage/stage2.txt");
   }
   else if(CLEAR==2){
-    mStage.loadStage("stage3");
+    mStage.loadStage("data/stage/stage3.txt");
   }
   else if(CLEAR==3){
-    mStage.loadStage("stage4");
+    mStage.loadStage("data/stage/stage4.txt");
   }
     mSnake.Init();
 
