@@ -9,8 +9,8 @@
 #include <unordered_map>
 #include <list>
 
-#define MAXROW 30
-#define MAXCOL 30
+#define MAXROW 32
+#define MAXCOL 32
 enum class WindowType{
     SCORE,
     MISSION,
