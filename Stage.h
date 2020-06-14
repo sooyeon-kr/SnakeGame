@@ -12,6 +12,8 @@ enum class TileType{
     Snake_Tail,
     Item_Growth,
     Item_Poison,
+    Gate,
+    Gate2,
     Size
 };
 
