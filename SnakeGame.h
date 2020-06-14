@@ -36,8 +36,8 @@ private:
 
     void CreateItem();
     void CreateGate();
-    void DestructItem(); //일정 시간에 의한 아이템 소멸 메소드
-     void DestructItem(Position pos); //스네이크에 의한 아이템 소멸 메소드 오버로딩
+    void DestructItem();
+    void DestructItem(Position pos);
     Position GetRandomPos();
 
     TileType CheckBuffer(int x, int y);
@@ -57,7 +57,5 @@ private:
     Snake mSnake;
     Timer mGameTimer;
     std::list<Item> Items;
-    std::list<Item> GatesX;
-    std::list<Item> GatesY;
     int** scrBuffer;    //스크린용 버퍼
 };
