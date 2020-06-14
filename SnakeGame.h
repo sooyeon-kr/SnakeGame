@@ -28,14 +28,14 @@ private:
     void WriteStageToScreen(Stage& stage);
     void WriteSnakeToScreen(Snake& snake);
     void WriteItemToScreen();
-    void WriteGate();
+    void WriteGate(int gatex,int gatey, int gatex2, int gatey2);
 
     bool IsGameOver();
     void Blocking();
     void NonBlocking();
 
     void CreateItem();
-    void CreateGate();
+    void CreateGate(int &x, int &y, int &x2, int &y2);
     void DestructItem();
     void DestructItem(Position pos);
     Position GetRandomPos();
@@ -44,14 +44,8 @@ private:
     TileType CheckBuffer(int x, int y);
 
 private:
-  int gatex=0; //첫번째 게이트 x좌표
-  int gatey=0;  //첫번째 게이트 y좌표
-  int gatex2=0; //2번째 게이트 x좌표
-  int gatey2=0; //2번째 게이트 y좌표
   int gatenum=0;  //한쌍의 게이트만 만들어지도록 하는 변수
   int through=0;  //한쌍의 게이트만 만들어지도록 하는 변수
-  int tailx=0;  //게이트 지날때 좌표를 기억하는 함수
-  int taily=0;
   float gateT = 0.0f;
   int CLEAR=0;
 
