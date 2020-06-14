@@ -558,6 +558,9 @@ bool SnakeGame::Play(){
         char str2[256] = {0,};
         sprintf(str2, "Mission");
         renderer.PrintMissionMessage(str2);
+        
+        wmove(renderer.windows[1],9,1);
+        wprintw(renderer.windows[1],"SCORE = %d",SCORE);
         //테스트 빨리할려고 각 항목 1만 달성해도 ok 
         if(MB>=1){
           wmove(renderer.windows[1],1,1);
