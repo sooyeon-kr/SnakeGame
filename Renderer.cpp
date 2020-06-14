@@ -21,11 +21,13 @@ void Renderer::Init(){
     init_pair((int)TileType::Snake_Tail, COLOR_MAGENTA, (int)TileType::Size + 1);
     init_pair((int)TileType::Item_Growth, (short)TileType::Item_Growth, (int)TileType::Size + 1);
     init_pair((int)TileType::Item_Poison, (short)TileType::Item_Poison, (int)TileType::Size + 1);
+    init_pair((int)TileType::Gate, COLOR_GREEN, (int)TileType::Size + 1);
+    init_pair((int)TileType::Gate2, COLOR_WHITE, (int)TileType::Size + 1);
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
 
     //윈도우 속성 받아오기
-    std::ifstream inStream("Screen.txt");
+    std::ifstream inStream("Screen");
     if(!inStream.is_open()){
         printw("Error\n");
         endwin();
@@ -53,8 +55,10 @@ void Renderer::DrawUI(){
     DrawBox(windows[(int)WindowType::MISSION]);
 }
 void Renderer::Draw(int** scrBuffer){
+
+
     for(int i = 0; i < MAXROW; i++){
-        move(i, 0);
+        move(i, 1);
         for(int k = 0; k < MAXCOL; k++){
             switch(scrBuffer[i][k]){
                 case (int)TileType::Blank:
@@ -98,11 +102,23 @@ void Renderer::Draw(int** scrBuffer){
                 addch(ACS_CKBOARD);
                 attroff(COLOR_PAIR((int)TileType::Item_Growth));
                 break;
-                
+
                 case (int)TileType::Item_Poison:
                 attron(COLOR_PAIR((int)TileType::Item_Poison));
                 addch(ACS_CKBOARD);
                 attroff(COLOR_PAIR((int)TileType::Item_Poison));
+                break;
+
+                case (int)TileType::Gate:
+                attron(COLOR_PAIR((int)TileType::Gate));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Gate));
+                break;
+
+                case (int)TileType::Gate2:
+                attron(COLOR_PAIR((int)TileType::Gate2));
+                addch(ACS_CKBOARD);
+                attroff(COLOR_PAIR((int)TileType::Gate2));
                 break;
             }
         }
@@ -161,4 +177,3 @@ void Renderer::PrintMissionMessage(const char* str){
 void Renderer::End(){
     endwin();
 }
-
