@@ -10,16 +10,16 @@ void SnakeGame::Init(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
   }
   else if(CLEAR==1){
-    mStage.loadStage("data/stage/stage2.txt");
+    mStage.loadStage("stage2");
   }
   else if(CLEAR==2){
-    mStage.loadStage("data/stage/stage3.txt");
+    mStage.loadStage("stage3");
   }
   else if(CLEAR==3){
-    mStage.loadStage("data/stage/stage4.txt");
+    mStage.loadStage("stage4");
   }
     mSnake.Init();
 
@@ -59,15 +59,22 @@ bool SnakeGame::Play(){
 
     float rTime = 5.0f;
     float itemDT = 0.0f;
-    int B=3;    //현재길이
-    int I=0;    //아이템 먹은 횟수
-    int P=0;    //P 아이템 먹은 횟수
-    int G=0;    //게이트 사용 횟수
-    int MB=0;   //목표 길이
-    int MI=0;   //목표 아이템 먹는 횟수
-    int MP=0;   //목표 p아이템 먹는 횟수
-    int MG=0;   //목표 게이트 사용 횟수
-    int SCORE=0;    //점수
+    int B=3;
+    int I=0;
+    int P=0;
+    int G=0;
+    int MB=0;
+    int MI=0;
+    int MP=0;
+    int MG=0;
+    int SCORE=0;
+    int gatex=0;
+    int gatey=0;
+    int gatex2=0;
+    int gatey2=0;
+    int index=2;
+    int tailx=0;  //게이트 지날때 좌표를 기억하는 함수
+    int taily=0;
 
     while(1){
         renderer.DrawUI();
@@ -123,18 +130,21 @@ bool SnakeGame::Play(){
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
-                B++;    
-                MB++;   
-                I++;    
+                B++;
+                MB++;
+                I++;
                 MI++;
                 SCORE +=10;
+                index++;
                 DestructItem(mSnake.head.Pos);
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
                 P++;
+                B--;
                 MB--;
                 MP++;
+                index--;
                 SCORE -=10;
                 DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
@@ -488,8 +498,8 @@ bool SnakeGame::Play(){
                 }
               }
 
-
-              if(scrBuffer[mSnake.body.back().y][mSnake.body.back().x] == scrBuffer[taily][tailx]){ //게이트를 지날때의 좌표를 받아서 꼬리가 그 좌표를 지나면 게이트를 없앱니다
+              if((mSnake.body.back().y==taily) && (mSnake.body.back().x ==tailx)){ //게이트를 지날때의 좌표를 받아서 꼬리가 그 좌표를 지나면 게이트를 없앱니다
+                if(through==1)
                 through+=1;
               }
 
@@ -500,6 +510,7 @@ bool SnakeGame::Play(){
                     //1단계 다시 시작을 위한 초기화
                     totalDt = 0.0f;
                     updateDT = 0.0f;
+                    gatenum=0;
                     RestartGame();
 
                     continue;
@@ -531,14 +542,14 @@ bool SnakeGame::Play(){
         WriteItemToScreen();
         if(gateT>5.0f){
         if(through==0){
-          CreateGate();
+          CreateGate(gatex,gatey,gatex2,gatey2);
         }
         else if(through==2){
           through=0;  //머리가 게이트를 통과하면 +1, 꼬리가 게이트 통과하면 +1 시켜서 2되면 기존 게이트 없앱니다.
           gatenum=0;
         }
       }
-        WriteGate();
+        WriteGate(gatex,gatey,gatex2,gatey2);
 
         char str[256] = {0,};
         sprintf(str, "totalDt = %0.2f", totalDt);
@@ -558,10 +569,10 @@ bool SnakeGame::Play(){
         char str2[256] = {0,};
         sprintf(str2, "Mission");
         renderer.PrintMissionMessage(str2);
-        
+
         wmove(renderer.windows[1],9,1);
         wprintw(renderer.windows[1],"SCORE = %d",SCORE);
-        //테스트 빨리할려고 각 항목 1만 달성해도 ok 
+
         if(MB>=1){
           wmove(renderer.windows[1],1,1);
           wprintw(renderer.windows[1],"Mission Length = %d / 5 (OK)",MB);
@@ -570,7 +581,6 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],1,1);
           wprintw(renderer.windows[1],"Mission Length = %d / 5 ( )",MB);
         }
-        
         if(MI >= 1){
           wmove(renderer.windows[1],3,1);
           wprintw(renderer.windows[1],"Mission G-Item = %d / 5 (OK)",MI);
@@ -579,7 +589,6 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],3,1);
           wprintw(renderer.windows[1],"Mission G-Item = %d / 5 ( )",MI);
         }
-        
         if(MP >= 1){
           wmove(renderer.windows[1],5,1);
           wprintw(renderer.windows[1],"Mission P-Item = %d / 3 (OK)",MP);
@@ -588,7 +597,6 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],5,1);
           wprintw(renderer.windows[1],"Mission P-Item = %d / 3 ( )",MP);
         }
-        
         if(MG>=1){
           wmove(renderer.windows[1],7,1);
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 (OK)",MG);
@@ -597,10 +605,10 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],7,1);
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
         }
-        
-        if((MB==1) && (MI==1) && (MP==1) && (MG==1)){ //테스트 빨리할려고 각각 한번만 달성하면 되도록했습니다.
-          CLEAR+=1;                 //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
-          GameClear();
+        if((MB==1) && (MI==1) && (MP==1) && (MG==1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
+          CLEAR+=1;
+          // mSnake.
+          // GameClear();
           break;
         }
 
@@ -626,16 +634,16 @@ void SnakeGame::RestartGame(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
   }
   else if(CLEAR==1){
-    mStage.loadStage("data/stage/stage2.txt");
+    mStage.loadStage("stage2");
   }
   else if(CLEAR==2){
-    mStage.loadStage("data/stage/stage3.txt");
+    mStage.loadStage("stage3");
   }
   else if(CLEAR==3){
-    mStage.loadStage("data/stage/stage4.txt");
+    mStage.loadStage("stage4");
   }
     mSnake.Init();
 
@@ -683,7 +691,7 @@ void SnakeGame::WriteItemToScreen(){
         scrBuffer[e.Pos.y][e.Pos.x] = (int)e.ItemType;
     }
 }
-void SnakeGame::WriteGate(){
+void SnakeGame::WriteGate(int gatex, int gatey, int gatex2, int gatey2){
     scrBuffer[gatey][gatex] = (int)TileType::Gate;
     scrBuffer[gatey2][gatex2] = (int)TileType::Gate2;
 
@@ -736,29 +744,29 @@ void SnakeGame::CreateItem(){
     }
 }
 
-void SnakeGame::CreateGate(){
+void SnakeGame::CreateGate(int &x, int &y, int &x2, int &y2){
   if(gatenum==0){ //게이트가 없으면
   while(1){
-    gatex = rand()%30;
-    gatey = rand()%30;
-    if(scrBuffer[gatey][gatex] == (int)TileType::Blank)
+    x = rand()%30;
+    y = rand()%30;
+    if(scrBuffer[y][x] == (int)TileType::Blank)
     continue;
-    else if(scrBuffer[gatey][gatex] == (int)TileType::ImmuneWall)
+    else if(scrBuffer[y][x] == (int)TileType::ImmuneWall)
     continue;
-    else if(scrBuffer[gatey][gatex] == (int)TileType::Wall){
+    else if(scrBuffer[y][x] == (int)TileType::Wall){
       break;
     }
     gatenum++;
   }
   while(1){
-    gatex2 = rand()%30;
-    gatey2 = rand()%30;
-    if(scrBuffer[gatey2][gatex2] == (int)TileType::Blank)
+    x2 = rand()%30;
+    y2 = rand()%30;
+    if(scrBuffer[y2][x2] == (int)TileType::Blank)
     continue;
-    else if(scrBuffer[gatey2][gatex2] == (int)TileType::ImmuneWall)
+    else if(scrBuffer[y2][x2] == (int)TileType::ImmuneWall)
     continue;
-    else if(scrBuffer[gatey2][gatex2] == (int)TileType::Wall){
-      if(gatex==gatex2 && gatey==gatey2)
+    else if(scrBuffer[y2][x2] == (int)TileType::Wall){
+      if(x==x2 && y==y2)
       continue;
       else
       break;
