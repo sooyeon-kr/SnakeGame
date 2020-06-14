@@ -7,12 +7,15 @@
 #include <string.h>
 
 void SnakeGame::Init(){
+
     renderer.Init();
-    mStage.loadStage("data/stage/stage1.txt");
+
+    mStage.loadStage("stage1");
     mSnake.Init();
-    
+
     //Items 초기화
     Items.clear();
+    // Gates.clear();
 
     srand(time(NULL));
 
@@ -43,7 +46,7 @@ bool SnakeGame::Play(){
     /*틱마다 갱신 후 출력*/
     float totalDt = 0.0f;
     float updateDT = 0;
-    
+
     float rTime = 5.0f;
     float itemDT = 0.0f;
 
@@ -51,13 +54,13 @@ bool SnakeGame::Play(){
         renderer.DrawUI();
         mGameTimer.UpdateTime();
         updateDT += mGameTimer.GetDeltaTime();
-   
+
         if(updateDT >= 0.2f){
             totalDt += updateDT;
             itemDT += updateDT;
             updateDT = 0.0f;
              //입력받은 키를 b에 저장
-            int key = getch(); 
+            int key = getch();
 
             if(errno != EAGAIN){
                 renderer.PrintSystemMessage("Error Not EAGAIN");
@@ -100,13 +103,9 @@ bool SnakeGame::Play(){
             if(t == TileType::Item_Growth){
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
-                //아이템 없애기
-                DestructItem(mSnake.head.Pos);
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
-                //아이템 없애기
-                DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
                     mSnake.Die();
             }else if(t == TileType::Blank){
@@ -114,7 +113,348 @@ bool SnakeGame::Play(){
                 mSnake.UpdateSnakePos(nextHeadPos);
             }else if(t == TileType::Wall || t == TileType::Snake_Body || t == TileType::Snake_Tail){
                 mSnake.Die();
-            }
+              }
+
+              else if(t== TileType::Gate){
+                through+=1;
+                if(scrBuffer[gatey2-1][gatex2] == (int) TileType::Blank){
+                  if(scrBuffer[gatey2+1][gatex2] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2-1;
+                      tailx=gatex2;
+                      taily=gatey2-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2+1;
+                      tailx=gatex2;
+                      taily=gatey2+1;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2+1;
+                      tailx=gatex2;
+                      taily=gatey2+1;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::UP;
+                  mSnake.head.Pos.x = gatex2;
+                  mSnake.head.Pos.y = gatey2-1;
+                  tailx=gatex2;
+                  taily=gatey2-1;
+                }
+              }
+
+                else if(scrBuffer[gatey2+1][gatex2] == (int) TileType::Blank){
+                  if(scrBuffer[gatey2-1][gatex2] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2-1;
+                      tailx=gatex2;
+                      taily=gatey2-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2-1;
+                      tailx=gatex2;
+                      taily=gatey2-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2+1;
+                      tailx=gatex2;
+                      taily=gatey2+1;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){   //아래로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex2;
+                      mSnake.head.Pos.y = gatey2+1;
+                      tailx=gatex2;
+                      taily=gatey2+1;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::DOWN;
+                  mSnake.head.Pos.x = gatex2;
+                  mSnake.head.Pos.y = gatey2+1;
+                  tailx=gatex2;
+                  taily=gatey2+1;
+                }
+                }
+
+                else if(scrBuffer[gatey2][gatex2+1] == (int) TileType::Blank){
+                  if(scrBuffer[gatey2][gatex2-1] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex2+1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2+1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex2+1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2+1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex2-1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2-1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex2-1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2-1;
+                      taily=gatey2;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::RIGHT;
+                  mSnake.head.Pos.x = gatex2+1;
+                  mSnake.head.Pos.y = gatey2;
+                  tailx=gatex2+1;
+                  taily=gatey2;
+                }
+                }
+                else if(scrBuffer[gatey2][gatex2-1] == (int) TileType::Blank){
+                  if(scrBuffer[gatey2][gatex2-1] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex2+1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2+1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex2+1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2+1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex2-1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2-1;
+                      taily=gatey2;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){   //아래로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex2-1;
+                      mSnake.head.Pos.y = gatey2;
+                      tailx=gatex2-1;
+                      taily=gatey2;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::LEFT;
+                  mSnake.head.Pos.x = gatex2-1;
+                  mSnake.head.Pos.y = gatey2;
+                  tailx=gatex2-1;
+                  taily=gatey2;
+                }
+              }
+              }
+
+
+              else if(t== TileType::Gate2){
+                through+=1;
+                if(scrBuffer[gatey-1][gatex] == (int) TileType::Blank){
+                  if(scrBuffer[gatey+1][gatex] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey-1;
+                      tailx=gatex;
+                      taily=gatey-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey-1;
+                      tailx=gatex;
+                      taily=gatey-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey+1;
+                      tailx=gatex;
+                      taily=gatey+1;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey+1;
+                      tailx=gatex;
+                      taily=gatey+1;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::UP;
+                  mSnake.head.Pos.x = gatex;
+                  mSnake.head.Pos.y = gatey-1;
+                  tailx=gatex;
+                  taily=gatey-1;
+                }
+
+                }
+                else if(scrBuffer[gatey+1][gatex] == (int) TileType::Blank){
+                  if(scrBuffer[gatey-1][gatex] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey-1;
+                      tailx=gatex;
+                      taily=gatey-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 위로 진출
+                      mSnake.head.Dir = Direction::UP;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey-1;
+                      tailx=gatex;
+                      taily=gatey-1;
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey+1;
+                      tailx=gatex;
+                      taily=gatey+1;
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 아래로 진출
+                      mSnake.head.Dir = Direction::DOWN;
+                      mSnake.head.Pos.x = gatex;
+                      mSnake.head.Pos.y = gatey+1;
+                      tailx=gatex;
+                      taily=gatey+1;
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::DOWN;
+                  mSnake.head.Pos.x = gatex;
+                  mSnake.head.Pos.y = gatey+1;
+                  tailx=gatex;
+                  taily=gatey+1;
+                }
+                }
+                else if(scrBuffer[gatey][gatex+1] == (int) TileType::Blank){
+                  if(scrBuffer[gatey][gatex-1] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex+1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex+1;
+                      taily=gatey;
+                    }
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex+1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex+1;
+                      taily=gatey;
+
+                    }
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex-1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex-1;
+                      taily=gatey;
+
+                    }
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex-1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex-1;
+                      taily=gatey;
+
+                    }
+                  }
+                  else{
+                  mSnake.head.Dir = Direction::RIGHT;
+                  mSnake.head.Pos.x = gatex+1;
+                  mSnake.head.Pos.y = gatey;
+                  tailx=gatex+1;
+                  taily=gatey;
+
+                }
+                }
+                
+                else if(scrBuffer[gatey][gatex-1] == (int) TileType::Blank){
+                  if(scrBuffer[gatey][gatex-1] == (int) TileType::Blank){
+                    if(mSnake.head.Dir == Direction::UP){ //위로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex+1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex+1;
+                      taily=gatey;
+
+                    }
+
+                    else if(mSnake.head.Dir == Direction::RIGHT){ //오른쪽으로 진입 - 오른쪽으로 진출
+                      mSnake.head.Dir = Direction::RIGHT;
+                      mSnake.head.Pos.x = gatex+1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex+1;
+                      taily=gatey;
+
+                    }
+
+                    else if(mSnake.head.Dir == Direction::LEFT){  //왼쪽으로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex-1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex-1;
+                      taily=gatey;
+
+                    }
+
+                    else if(mSnake.head.Dir == Direction::DOWN){  //아래로 진입 - 왼쪽으로 진출
+                      mSnake.head.Dir = Direction::LEFT;
+                      mSnake.head.Pos.x = gatex-1;
+                      mSnake.head.Pos.y = gatey;
+                      tailx=gatex-1;
+                      taily=gatey;
+
+                    }
+                  }
+
+                  else{
+                  mSnake.head.Dir = Direction::LEFT;
+                  mSnake.head.Pos.x = gatex-1;
+                  mSnake.head.Pos.y = gatey;
+                  tailx=gatex-1;
+                  taily=gatey;
+
+                }
+                }
+              }
+
+
+              if(scrBuffer[mSnake.body.back().y][mSnake.body.back().x] == scrBuffer[taily][tailx]){ //게이트를 지날때의 좌표를 받아서 꼬리가 그 좌표를 지나면 게이트를 없앱니다
+                through+=1;
+              }
 
             if(!mSnake.IsAlive()){
                 if(IsGameOver()){
@@ -152,13 +492,21 @@ bool SnakeGame::Play(){
             itemDT = 0;
         }
         WriteItemToScreen();
+        if(through==0){
+          CreateGate();
+        }
+        else if(through==2){
+          through=0;  //머리가 게이트를 통과하면 +1, 꼬리가 게이트 통과하면 +1 시켜서 2되면 기존 게이트 없앱니다.
+          gatenum=0;
+        }
+        WriteGate();
 
         char str[256] = {0,};
         sprintf(str, "totalDt = %0.2f", totalDt);
         renderer.PrintScoreMessage(str);
 
         renderer.Draw(scrBuffer);
-  
+
         renderer.Refresh();
     }
 
@@ -178,11 +526,11 @@ void SnakeGame::RestartGame(){
     mGameTimer.ResetTimer();
 
     renderer.Init();
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
     mSnake.Init();
 
     Items.clear();
-
+    // Gates.clear();
     NonBlocking();
 }
 
@@ -225,6 +573,11 @@ void SnakeGame::WriteItemToScreen(){
         scrBuffer[e.Pos.y][e.Pos.x] = (int)e.ItemType;
     }
 }
+void SnakeGame::WriteGate(){
+    scrBuffer[gatey][gatex] = (int)TileType::Gate;
+    scrBuffer[gatey2][gatex2] = (int)TileType::Gate2;
+
+}
 
 bool SnakeGame::IsGameOver(){
     //렌더러를 이용해서 시스템 문자열 출력
@@ -261,6 +614,39 @@ void SnakeGame::CreateItem(){
     }
 }
 
+void SnakeGame::CreateGate(){
+  if(gatenum == 0){ //게이트가 없으면
+  while(1){
+    gatex = rand()%30;
+    gatey = rand()%30;
+    if(scrBuffer[gatey][gatex] == (int)TileType::Blank)
+    continue;
+    else if(scrBuffer[gatey][gatex] == (int)TileType::ImmuneWall)
+    continue;
+    else if(scrBuffer[gatey][gatex] == (int)TileType::Wall){
+      break;
+    }
+    gatenum++;
+  }
+  while(1){
+    gatex2 = rand()%30;
+    gatey2 = rand()%30;
+    if(scrBuffer[gatey2][gatex2] == (int)TileType::Blank)
+    continue;
+    else if(scrBuffer[gatey2][gatex2] == (int)TileType::ImmuneWall)
+    continue;
+    else if(scrBuffer[gatey2][gatex2] == (int)TileType::Wall){
+      if(gatex==gatex2 && gatey==gatey2)
+      continue;
+      else
+      break;
+    }
+    }
+    gatenum++; //gatenum이 2가 되므로 2개, 즉 한쌍만 만들어 지도록 합니다.
+  }
+  else  //게이트가 아직 필드 내에 있으면 안만듭니다
+  return;
+}
 void SnakeGame::DestructItem(){
     Items.pop_front();
     /*
@@ -274,19 +660,10 @@ void SnakeGame::DestructItem(){
     }
     */
 }
-void SnakeGame::DestructItem(Position pos){
-    for(auto it=Items.begin(); it!=Items.end();)
-    {
-        if(it->Pos.x == pos.x && it->Pos.y == pos.y)
-            Items.erase(it++);
-        else
-            it++;
-    }
-}
 
 Position SnakeGame::GetRandomPos(){
     std::vector<Position> candidate;
-    
+
     for(int i=0; i<MAXROW; i++)
         for(int j=0; j<MAXCOL; j++)
             if(scrBuffer[i][j]==(int)TileType::Blank)
