@@ -14,6 +14,7 @@ void Snake::Init(){
     body.emplace_back(8, 10);
 
     isLive = true;
+    isClear = false;
 
 }
 
