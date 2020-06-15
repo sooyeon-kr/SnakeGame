@@ -10,16 +10,16 @@ void SnakeGame::Init(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
   }
   else if(CLEAR==1){
-    mStage.loadStage("data/stage/stage2.txt");
+    mStage.loadStage("stage2");
   }
   else if(CLEAR==2){
-    mStage.loadStage("data/stage/stage3.txt");
+    mStage.loadStage("stage3");
   }
   else if(CLEAR==3){
-    mStage.loadStage("data/stage/stage4.txt");
+    mStage.loadStage("stage4");
   }
     mSnake.Init();
 
@@ -56,9 +56,13 @@ bool SnakeGame::Play(){
     /*틱마다 갱신 후 출력*/
     float totalDt = 0.0f;
     float updateDT = 0;
+    float gateT = 0.0f;
 
     float rTime = 5.0f;
     float itemDT = 0.0f;
+    int gatenum=0;  //한쌍의 게이트만 만들어지도록 하는 변수
+    int through=0;  //한쌍의 게이트만 만들어지도록 하는 변수
+
     int B=3;
     int I=0;
     int P=0;
@@ -510,7 +514,9 @@ bool SnakeGame::Play(){
                     //1단계 다시 시작을 위한 초기화
                     totalDt = 0.0f;
                     updateDT = 0.0f;
+                    gateT=0.0f;
                     gatenum=0;
+                    through=0;
                     RestartGame();
 
                     continue;
@@ -542,7 +548,7 @@ bool SnakeGame::Play(){
         WriteItemToScreen();
         if(gateT>5.0f){
         if(through==0){
-          CreateGate(gatex,gatey,gatex2,gatey2);
+          CreateGate(gatex,gatey,gatex2,gatey2,gatenum);
         }
         else if(through==2){
           through=0;  //머리가 게이트를 통과하면 +1, 꼬리가 게이트 통과하면 +1 시켜서 2되면 기존 게이트 없앱니다.
@@ -607,8 +613,8 @@ bool SnakeGame::Play(){
         }
         if((MB>=1) && (MI>=1) && (MP>=1) && (MG>=1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
           CLEAR+=1;
-          // mSnake.
-          // GameClear();
+          mSnake.Clear();
+          GameClear();
           break;
         }
 
@@ -634,16 +640,16 @@ void SnakeGame::RestartGame(){
 
     renderer.Init();
     if(CLEAR==0){
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("stage1");
   }
   else if(CLEAR==1){
-    mStage.loadStage("data/stage/stage2.txt");
+    mStage.loadStage("stage2");
   }
   else if(CLEAR==2){
-    mStage.loadStage("data/stage/stage3.txt");
+    mStage.loadStage("stage3");
   }
   else if(CLEAR==3){
-    mStage.loadStage("data/stage/stage4.txt");
+    mStage.loadStage("stage4");
   }
     mSnake.Init();
 
@@ -744,7 +750,7 @@ void SnakeGame::CreateItem(){
     }
 }
 
-void SnakeGame::CreateGate(int &x, int &y, int &x2, int &y2){
+void SnakeGame::CreateGate(int &x, int &y, int &x2, int &y2, int &gatenum){
   if(gatenum==0){ //게이트가 없으면
   while(1){
     x = rand()%30;
