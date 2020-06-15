@@ -22,7 +22,7 @@ void Renderer::Init(){
     init_pair((int)TileType::Item_Growth, (short)TileType::Item_Growth, (int)TileType::Size + 1);
     init_pair((int)TileType::Item_Poison, (short)TileType::Item_Poison, (int)TileType::Size + 1);
     init_pair((int)TileType::Gate, COLOR_GREEN, (int)TileType::Size + 1);
-    init_pair((int)TileType::Gate2, COLOR_WHITE, (int)TileType::Size + 1);
+    init_pair((int)TileType::Gate2, COLOR_BLACK, (int)TileType::Size + 1);
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
 
@@ -54,6 +54,7 @@ void Renderer::DrawUI(){
     DrawBox(windows[(int)WindowType::SCORE]);
     DrawBox(windows[(int)WindowType::MISSION]);
 }
+
 void Renderer::Draw(int** scrBuffer){
 
 
