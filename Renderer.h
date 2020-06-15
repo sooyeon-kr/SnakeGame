@@ -45,12 +45,11 @@ public:
     void PrintScoreMessage(const char* str);
 
     void PrintMissionMessage(const char* str);
-
+    WINDOW* windows[4]; //서브 윈도우 배열
 private:
     void DrawBox(WINDOW* win);
 
 private:
-    WINDOW* windows[4]; //서브 윈도우 배열
     int subWinProperty[(int)WindowType::SIZE][4];
 };
 
