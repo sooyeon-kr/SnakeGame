@@ -35,7 +35,7 @@ private:
     void NonBlocking();
 
     void CreateItem();
-    void CreateGate(int &x, int &y, int &x2, int &y2);
+    void CreateGate(int &x, int &y, int &x2, int &y2,int &gatenum);
     void DestructItem();
     void DestructItem(Position pos);
     Position GetRandomPos();
@@ -44,9 +44,6 @@ private:
     TileType CheckBuffer(int x, int y);
 
 private:
-  int gatenum=0;  //한쌍의 게이트만 만들어지도록 하는 변수
-  int through=0;  //한쌍의 게이트만 만들어지도록 하는 변수
-  float gateT = 0.0f;
   int CLEAR=0;
 
     Stage mStage;
