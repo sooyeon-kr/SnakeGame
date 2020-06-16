@@ -76,7 +76,7 @@ bool SnakeGame::Play(){
     int gatey=0;
     int gatex2=0;
     int gatey2=0;
-    int index=2;
+    // int index=2;
     int tailx=0;  //게이트 지날때 좌표를 기억하는 함수
     int taily=0;
 
@@ -132,6 +132,13 @@ bool SnakeGame::Play(){
             //다음방향 좌표를 이용해서 충돌 계산하거나 타일정보에 따라 처리
             TileType t = CheckBuffer(nextHeadPos.Pos.x, nextHeadPos.Pos.y);
             if(t == TileType::Item_Growth){
+              if(B==15){
+                mSnake.body.push_front(mSnake.head.Pos);
+                mSnake.body.pop_back();
+                mSnake.head.Pos = nextHeadPos.Pos;
+                DestructItem(mSnake.head.Pos);
+              }
+              else{
                 mSnake.body.push_front(mSnake.head.Pos);
                 mSnake.head.Pos = nextHeadPos.Pos;
                 B++;
@@ -139,8 +146,9 @@ bool SnakeGame::Play(){
                 I++;
                 MI++;
                 SCORE +=10;
-                index++;
+                // index++;
                 DestructItem(mSnake.head.Pos);
+              }
             }else if(t == TileType::Item_Poison){
                 mSnake.body.pop_back();
                 mSnake.UpdateSnakePos(nextHeadPos);
@@ -148,7 +156,7 @@ bool SnakeGame::Play(){
                 B--;
                 MB--;
                 MP++;
-                index--;
+                // index--;
                 SCORE -=10;
                 DestructItem(mSnake.head.Pos);
                 if(mSnake.GetSnakeLength() < 3)
@@ -161,8 +169,7 @@ bool SnakeGame::Play(){
               }
 
               else if(t== TileType::Gate){
-                G++;
-                MG++;
+
                 SCORE+=10;
                 through+=1;
                 if(scrBuffer[gatey2-1][gatex2] == (int) TileType::Blank){
@@ -325,8 +332,7 @@ bool SnakeGame::Play(){
 
 
               else if(t== TileType::Gate2){
-                G++;
-                MG++;
+
                 SCORE+=10;
                 through+=1;
                 if(scrBuffer[gatey-1][gatex] == (int) TileType::Blank){
@@ -503,6 +509,8 @@ bool SnakeGame::Play(){
               }
 
               if((mSnake.body.back().y==taily) && (mSnake.body.back().x ==tailx)){ //게이트를 지날때의 좌표를 받아서 꼬리가 그 좌표를 지나면 게이트를 없앱니다
+                G++;
+                MG++;
                 if(through==1)
                 through+=1;
               }
@@ -517,11 +525,31 @@ bool SnakeGame::Play(){
                     gateT=0.0f;
                     gatenum=0;
                     through=0;
+                    B=3;
+                    I=0;
+                    P=0;
+                    G=0;
+                    MB=0;
+                    MI=0;
+                    MP=0;
+                    MG=0;
+                    SCORE=0;
+                    gatex=0;
+                    gatey=0;
+                    gatex2=0;
+                    gatey2=0;
                     RestartGame();
 
                     continue;
                 }
             }
+            // if(!mSnake.Clear()){
+            //   continue;
+            // }
+            // else{
+            //
+            // }
+
         }
         //화면 초기화
         ScreenClear();
@@ -611,13 +639,40 @@ bool SnakeGame::Play(){
           wmove(renderer.windows[1],7,1);
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
         }
+
         if((MB>=1) && (MI>=1) && (MP>=1) && (MG>=1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
           CLEAR+=1;
           mSnake.Clear();
-          GameClear();
-          break;
+          // GameClear();
+          // break;
         }
-
+        if(mSnake.IsClear()){
+          if(!GameClear()){
+            totalDt = 0.0f;
+            updateDT = 0.0f;
+            gateT=0.0f;
+            gatenum=0;
+            through=0;
+            B=3;
+            I=0;
+            P=0;
+            G=0;
+            MB=0;
+            MI=0;
+            MP=0;
+            MG=0;
+            SCORE=0;
+            gatex=0;
+            gatey=0;
+            gatex2=0;
+            gatey2=0;
+            RestartGame();
+            continue;
+          }
+          else{
+            return false;
+          }
+        }
         renderer.Draw(scrBuffer);
 
         renderer.Refresh();
@@ -708,9 +763,9 @@ bool SnakeGame::GameClear(){
   while(1){
       int key = getch();
       if(key == 'y' || (key + 32) == 'y'){
-          Init();
+          return false;
       }else if(key == 'n' | (key + 32) == 'n'){
-
+          return true;
       }
   }
 }
