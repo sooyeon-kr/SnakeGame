@@ -45,6 +45,7 @@ public:
     Direction GetCurDirection(){return head.Dir;}
     int GetSnakeLength(){return body.size() + 1;}
     bool IsAlive(){return isLive;}
+    bool IsClear(){return isClear;}
 
 public:
     // std::vector<Position> savesp; //savesp는 이동하기 이전의 좌표를 기억하기 위한 배열입니다.
