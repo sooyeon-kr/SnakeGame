@@ -2,6 +2,8 @@
 #include <fstream>
 #include <memory.h>
 
+#define PAD 20 //이미 지정되어 있는 COLOR_XXXX값과 겹치지 않게 컬러를 설정해주기 위해 임의의 padding값 설정
+
 void Renderer::Init(){
     initscr(); //ncurses 초기화
 
@@ -12,20 +14,19 @@ void Renderer::Init(){
 
     start_color(); //color적용시 꼭 필요,터미널에서 지원되는 모든 색들을 초기화해서 준비
     init_color((int)TileType::Size + 1, 1000,1000,1000);
-    init_color((short)TileType::Item_Growth, 600, 400, 200);
-    init_color((short)TileType::Item_Poison, 20, 40, 20);
+    init_color((short)TileType::Item_Growth + PAD, 200, 800, 200);
+    init_color((short)TileType::Item_Poison + PAD, 1000, 400, 200);
     init_pair((int)TileType::Wall, COLOR_RED, (int)TileType::Size + 1); //팔레트 넘버3, 전경색 RED, 배경색 WHITE
     init_pair((int)TileType::ImmuneWall, COLOR_BLUE, (int)TileType::Size + 1);
     init_pair((int)TileType::Snake_Head, COLOR_CYAN, (int)TileType::Size + 1);
-    init_pair((int)TileType::Snake_Body, COLOR_YELLOW, (int)TileType::Size + 1);
-    init_pair((int)TileType::Snake_Tail, COLOR_MAGENTA, (int)TileType::Size + 1);
-    init_pair((int)TileType::Item_Growth, (short)TileType::Item_Growth, (int)TileType::Size + 1);
-    init_pair((int)TileType::Item_Poison, (short)TileType::Item_Poison, (int)TileType::Size + 1);
-    init_pair((int)TileType::Gate, COLOR_GREEN, (int)TileType::Size + 1);
-    init_pair((int)TileType::Gate2, COLOR_BLACK, (int)TileType::Size + 1);
+    init_pair((int)TileType::Snake_Tail, COLOR_BLACK, (int)TileType::Size + 1);
+    init_pair((int)TileType::Snake_Body, COLOR_GREEN, (int)TileType::Size + 1);
+    init_pair((int)TileType::Item_Growth, (short)TileType::Item_Growth + PAD, (int)TileType::Size);
+    init_pair((int)TileType::Item_Poison, COLOR_RED, (short)TileType::Item_Poison + PAD );
+    init_pair((int)TileType::Gate, COLOR_CYAN, COLOR_BLACK);
+    init_pair((int)TileType::Gate2, COLOR_MAGENTA, COLOR_BLACK);
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
-
     //윈도우 속성 받아오기
     std::ifstream inStream("Screen.txt");
     if(!inStream.is_open()){
@@ -80,7 +81,8 @@ void Renderer::Draw(int** scrBuffer){
 
                 case (int)TileType::Snake_Head:
                 attron(COLOR_PAIR((int)TileType::Snake_Head));
-                addch(ACS_CKBOARD);
+                // addch(ACS_CKBOARD);
+                addch(ACS_BULLET);
                 attroff(COLOR_PAIR((int)TileType::Snake_Head));
                 break;
 
@@ -98,25 +100,25 @@ void Renderer::Draw(int** scrBuffer){
 
                 case (int)TileType::Item_Growth:
                 attron(COLOR_PAIR((int)TileType::Item_Growth));
-                addch(ACS_CKBOARD);
+                addch(ACS_BLOCK);
                 attroff(COLOR_PAIR((int)TileType::Item_Growth));
                 break;
 
                 case (int)TileType::Item_Poison:
                 attron(COLOR_PAIR((int)TileType::Item_Poison));
-                addch(ACS_CKBOARD);
+                addch(ACS_BLOCK);
                 attroff(COLOR_PAIR((int)TileType::Item_Poison));
                 break;
 
                 case (int)TileType::Gate:
                 attron(COLOR_PAIR((int)TileType::Gate));
-                addch(ACS_CKBOARD);
+                addch(ACS_BLOCK);
                 attroff(COLOR_PAIR((int)TileType::Gate));
                 break;
 
                 case (int)TileType::Gate2:
                 attron(COLOR_PAIR((int)TileType::Gate2));
-                addch(ACS_CKBOARD);
+                addch(ACS_BLOCK);
                 attroff(COLOR_PAIR((int)TileType::Gate2));
                 break;
             }

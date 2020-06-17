@@ -25,7 +25,8 @@ bool Stage::loadStage(char* filename)
     mapFile>>row>>col;//row, col 값 받아옴
     mapFile.ignore();
 
-    map=(int**)malloc(row*sizeof(int*));//row pointer 공간 할당
+    if(map == nullptr)
+        map=(int**)malloc(row*sizeof(int*));//row pointer 공간 할당
 
     for(int i=0; i<row; i++)
     {
