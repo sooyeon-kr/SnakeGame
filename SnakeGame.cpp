@@ -640,11 +640,9 @@ bool SnakeGame::Play(){
           wprintw(renderer.windows[1],"Mission Gate Usage = %d / 5 ( )",MG);
         }
 
-        if((MB>=1) && (MI>=1) && (MP>=1) && (MG>=1)){ //목표에 도달하면 게임 클리어로 하고 다음단계로 넘어갈려고 한 부분인데 의도대로 안되네요.
+        if((MB>=5) && (MI>=5) && (MP>=3) && (MG>=5)){ //각각 목표에 도달하면 게임 클리어
           CLEAR+=1;
           mSnake.Clear();
-          // GameClear();
-          // break;
         }
         if(mSnake.IsClear()){
           if(!GameClear()){
