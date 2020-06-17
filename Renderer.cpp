@@ -27,7 +27,7 @@ void Renderer::Init(){
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
 
     //윈도우 속성 받아오기
-    std::ifstream inStream("Screen");
+    std::ifstream inStream("Screen.txt");
     if(!inStream.is_open()){
         printw("Error\n");
         endwin();
@@ -56,8 +56,6 @@ void Renderer::DrawUI(){
 }
 
 void Renderer::Draw(int** scrBuffer){
-
-
     for(int i = 0; i < MAXROW; i++){
         move(i, 1);
         for(int k = 0; k < MAXCOL; k++){
@@ -144,8 +142,7 @@ void Renderer::PrintSystemMessage(const char* str){
     wattron(sysWin, COLOR_PAIR(3));
     wprintw(sysWin, str);
     wattroff(sysWin, COLOR_PAIR(3));
-    refresh();
-
+    wrefresh(sysWin);
     delwin(sysWin);
 }
 
@@ -155,26 +152,29 @@ void Renderer::PrintSystemMessage(std::string str){
     wattron(sysWin, COLOR_PAIR(3));
     wprintw(sysWin, str.c_str());
     wattroff(sysWin, COLOR_PAIR(3));
-    refresh();
-
+    wrefresh(sysWin);
     delwin(sysWin);
 }
 
 void Renderer::PrintScoreMessage(const char* str){
     wmove(windows[(int)WindowType::SCORE], 0, 0);
-    wattron(windows[(int)WindowType::SCORE], COLOR_PAIR(3));
     wprintw(windows[(int)WindowType::SCORE], str);
-    wattroff(windows[(int)WindowType::SCORE], COLOR_PAIR(3));
-    refresh();
+}
+void Renderer::PrintScoreMessageXY(int x, int y, const char* str){
+    wmove(windows[(int)WindowType::SCORE], y, x);
+    wprintw(windows[(int)WindowType::SCORE], str);
 }
 
 void Renderer::PrintMissionMessage(const char* str){
     wmove(windows[(int)WindowType::MISSION], 0, 0);
-    wattron(windows[(int)WindowType::MISSION], COLOR_PAIR(3));
     wprintw(windows[(int)WindowType::MISSION], str);
-    wattroff(windows[(int)WindowType::MISSION], COLOR_PAIR(3));
-    refresh();
 }
+
+void Renderer::PrintMissionMessageXY(int x, int y, const char* str){
+    wmove(windows[(int)WindowType::MISSION], y, x);
+    wprintw(windows[(int)WindowType::MISSION], str);
+}
+
 void Renderer::End(){
     endwin();
 }

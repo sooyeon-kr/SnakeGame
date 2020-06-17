@@ -9,8 +9,9 @@
 #include <unordered_map>
 #include <list>
 
-#define MAXROW 32
-#define MAXCOL 32
+#define MAXROW 30
+#define MAXCOL 30
+
 enum class WindowType{
     SCORE,
     MISSION,
@@ -43,15 +44,16 @@ public:
     void PrintSystemMessage(std::string str);
 
     void PrintScoreMessage(const char* str);
+    void PrintScoreMessageXY(int x, int y, const char* str);
 
     void PrintMissionMessage(const char* str);
-    WINDOW* windows[4]; //서브 윈도우 배열
+    void PrintMissionMessageXY(int x, int y, const char* str);
 private:
     void DrawBox(WINDOW* win);
 
 private:
+    WINDOW* windows[4]; //서브 윈도우 배열
     int subWinProperty[(int)WindowType::SIZE][4];
 };
-
 
 #endif
