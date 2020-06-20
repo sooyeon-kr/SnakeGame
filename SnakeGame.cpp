@@ -11,7 +11,7 @@ void SnakeGame::Init(){
     renderer.Init();
 
     if(CLEAR==0){
-    mStage.loadStage("data/stage/stage1.txt");
+    mStage.loadStage("sdata/stage/stage1.txt");
   }
   else if(CLEAR==1){
     mStage.loadStage("data/stage/stage2.txt");
@@ -45,7 +45,7 @@ void SnakeGame::Init(){
     score.GrowthItemNum = 0;
     score.PoisonItemNum = 0;
     score.UsedGateNum = 0;
-    score.time = 0.0f;   
+    score.time = 0.0f;
 
     mission.SnakeLength = 5;
     mission.GrowthItemNum = 5;
@@ -146,11 +146,11 @@ bool SnakeGame::Play(){
                 mSnake.UpdateSnakePos(nextHeadPos);
                 score.PoisonItemNum++;
                 score.SnakeLength = mSnake.GetSnakeLength();
-                
+
                 DestructItem(mSnake.head.Pos);
-                
+
                 // 스네이크의 몸의 길이가 3보다 작아지거나 PoisonItem을 Mission에서 제한한 갯수보다 많이 먹었을 경우 죽음
-                if(mSnake.GetSnakeLength() < 3 || score.PoisonItemNum > mission.PoisonItemNum) 
+                if(mSnake.GetSnakeLength() < 3 || score.PoisonItemNum > mission.PoisonItemNum)
                     mSnake.Die();
             }
             else if(t == TileType::Blank){
@@ -161,9 +161,9 @@ bool SnakeGame::Play(){
                 mSnake.Die();
             }
             //게이트
-            else if(t== TileType::Gate || t == TileType::Gate2){ 
+            else if(t== TileType::Gate || t == TileType::Gate2){
               score.UsedGateNum++; //스코어의 게이트 사용 횟수 증가
-              nextHeadPos = IndicatePassedDPos(nextHeadPos);  //게이트 통과 후 다음 위치 계산   
+              nextHeadPos = IndicatePassedDPos(nextHeadPos);  //게이트 통과 후 다음 위치 계산
               mSnake.UpdateSnakePos(nextHeadPos); //스네이크의 위치 업데이트
               gate->lifeTurn = mSnake.GetSnakeLength(); //게이트 소멸을 위해서 lifeTurn에 스네이크의 길이를 넣어줌
             }
@@ -171,14 +171,14 @@ bool SnakeGame::Play(){
             //게이트가 있을경우 게이트의 생존턴 계산
             if(gate != nullptr){ // 게이트가 만들어졌을경우
               if(gate->lifeTurn > 0){ // 현재 게이트 통과 중인 것(한 틱 마다 한 번씩 이동하므로)
-                gate->lifeTurn--; 
+                gate->lifeTurn--;
               }else if(gate->lifeTurn == 0){ // 스네이크의 길이만큼 모두 통과를 했을 경우
                 //삭제
                 delete gate;
                 gate = nullptr; // 다시 create해주기 위하여 nullptr로 초기화
               }
             }
-            
+
             if(!mSnake.IsAlive()){ // 스네이크가 죽었을 경우
                 if(IsGameOver()){ //게임이 끝났을 경우인데 사용자가 n입력
                     return false;
@@ -189,8 +189,14 @@ bool SnakeGame::Play(){
                     totalDt = 0.0f;
                     updateDT = 0.0f;
                     gateT=0.0f;
-
+                    score.SnakeLength = 3;
+                    score.GrowthItemNum=0;
+                    score.PoisonItemNum=0;
+                    score.UsedGateNum=0;
+                    score.time=0.0f;
+                    gate = nullptr;
                     RestartGame(); //재시작
+
 
                     continue;
                 }
@@ -229,6 +235,8 @@ bool SnakeGame::Play(){
           }
         }
 
+
+
         WriteGateToScreen(); //gate값을 scrBuffer에 저장
 
       //스코어 및 미션 표시
@@ -258,30 +266,82 @@ bool SnakeGame::Play(){
         sprintf(str, "Mission");
         renderer.PrintMissionMessage(str);
 
+        if(score.SnakeLength >= mission.SnakeLength){
+          sprintf(str, "Mission Length: %d / %d (o)",score.SnakeLength, mission.SnakeLength);
+          renderer.PrintMissionMessageXY(1, 3, str);
+        }
+        else{
         sprintf(str, "Mission Length: %d / %d ( )",score.SnakeLength, mission.SnakeLength);
         renderer.PrintMissionMessageXY(1, 3, str);
+        }
 
+        if(score.GrowthItemNum >= mission.GrowthItemNum){
+          sprintf(str, "Mission G-Item: %d / %d (o)",score.GrowthItemNum, mission.GrowthItemNum);
+          renderer.PrintMissionMessageXY(1, 5, str);
+        }
+        else{
         sprintf(str, "Mission G-Item: %d / %d ( )",score.GrowthItemNum, mission.GrowthItemNum);
         renderer.PrintMissionMessageXY(1, 5, str);
+        }
 
+        if(score.PoisonItemNum >= mission.PoisonItemNum){
+          mSnake.Die();
+          if(!mSnake.IsAlive()){
+              if(IsGameOver()){
+                  return false;
+              }
+              else
+              {
+                  totalDt = 0.0f;
+                  updateDT = 0.0f;
+                  gateT=0.0f;
+                  score.SnakeLength = 3;
+                  score.GrowthItemNum=0;
+                  score.PoisonItemNum=0;
+                  score.UsedGateNum=0;
+                  score.time=0.0f;
+                  gate = nullptr;
+                  RestartGame();
+                  continue;
+              }
+          }
+        }
+        else{
         sprintf(str, "Mission P-Item: %d <= %d ( )",score.PoisonItemNum, mission.PoisonItemNum);
         renderer.PrintMissionMessageXY(1, 7, str);
+        }
 
+        if(score.UsedGateNum >= mission.UsedGateNum){
+          sprintf(str, "Mission Gate Usage: %d / %d (o)",score.UsedGateNum, mission.UsedGateNum);
+          renderer.PrintMissionMessageXY(1, 9, str);
+        }
+        else{
         sprintf(str, "Mission Gate Usage: %d / %d ( )",score.UsedGateNum, mission.UsedGateNum);
         renderer.PrintMissionMessageXY(1, 9, str);
+        }
 
+        if(score.time >= mission.time){
+          sprintf(str, "Mission Time: %0.0f > %0.0f sec (o)", score.time, mission.time);
+          renderer.PrintMissionMessageXY(1, 11, str);
+        }
+        else{
         sprintf(str, "Mission Time: %0.0f > %0.0f sec ( )", score.time, mission.time);
         renderer.PrintMissionMessageXY(1, 11, str);
+      }
       }
 
       //게임클리어 조건 검사
       if(IsClear()){
         CLEAR++;
         if(GameClear()){
-          totalDt = 0.0f;
           updateDT = 0.0f;
           gateT=0.0f;
-
+          score.SnakeLength = 3;
+          score.GrowthItemNum=0;
+          score.PoisonItemNum=0;
+          score.UsedGateNum=0;
+          score.time=0.0f;
+          gate = nullptr;
           RestartGame();
           continue;
         }
@@ -331,7 +391,6 @@ void SnakeGame::RestartGame(){
     mSnake.Init();
 
     Items.clear();
-
     NonBlocking();
 }
 
@@ -401,7 +460,7 @@ bool SnakeGame::GameClear(){
 
 //미션 성공 여부를 score와 mission의 멤버변수로 비교하여 리턴해주는 메소드
 bool SnakeGame::IsClear(){
-  return score.SnakeLength >= mission.SnakeLength && score.GrowthItemNum >= mission.GrowthItemNum && 
+  return score.SnakeLength >= mission.SnakeLength && score.GrowthItemNum >= mission.GrowthItemNum &&
         score.PoisonItemNum <= mission.PoisonItemNum && score.UsedGateNum >= mission.UsedGateNum && score.time > mission.time;
 }
 
@@ -461,15 +520,15 @@ void SnakeGame::CreateGate(){
     }
 
     gate = new Gate(); //한 쌍의 게이트 정보를 갖을 수 있는 gate 생성하여 각각의 gate에 wall의 위치값을 주어 생성될 gate의 위치를 정한다.
-    gate->gPos1 = candidate[randIdx1]; 
+    gate->gPos1 = candidate[randIdx1];
     gate->gPos2 = candidate[randIdx2];
   }
 }
 
 //게이트 통과 시 출력 될 head의 좌표를 구하는 메소드(바디는 연쇄적으로 처리 가능)
 DPosition SnakeGame::IndicatePassedDPos(DPosition headPos){
-  Position outPos; // 나갈 게이트의 위치값을 받을 Position선언. 
-  if(gate->gPos1 == headPos.Pos){ 
+  Position outPos; // 나갈 게이트의 위치값을 받을 Position선언.
+  if(gate->gPos1 == headPos.Pos){
     outPos = gate->gPos2;
   }else{
     outPos = gate->gPos1;
@@ -477,7 +536,7 @@ DPosition SnakeGame::IndicatePassedDPos(DPosition headPos){
 
   Direction curDir = headPos.Dir; //현재 head의 진행 방향을 curDir에 저장함
   Position nextPos = outPos; //나갈 게이트의 위치는 nextPos에 저장함
-  
+
   for(int i = 0; i < (int)Direction::SIZE; i++){ //나갈방향의 수(4번 0~3)만큼 비교함
     //현재 방향을 기준으로 다음 좌표 계산
     switch(curDir){
@@ -499,11 +558,11 @@ DPosition SnakeGame::IndicatePassedDPos(DPosition headPos){
     if(CanMovePos(nextPos.x, nextPos.y)){
       break; //맞다면 다른 검사할 필요 없이 break로 빠져나가 이후 nextPos로 Head값을 옮기면 된다.
     }
-    
+
     //(2번째 검사 시 필요, 원래 방향으로 바꿔서 다시 검사해야 하므로)
     curDir = headPos.Dir;
 
-    //안맞으면 방향 순서에 따라 변경 
+    //안맞으면 방향 순서에 따라 변경
     {
       switch(i){
         case 0: //첫 시도 실패 따라서 시계방향 계산
@@ -513,7 +572,7 @@ DPosition SnakeGame::IndicatePassedDPos(DPosition headPos){
         case 1: //두번째 시도 실패. 역시계방향 계산
           curDir = (Direction)((curDir - 1) < 0 ? Direction::SIZE - 1 : curDir - 1);
           break;
-          
+
         case 2: //세번째 실패. 역방향 계산
           if((int)curDir >= 2){
             curDir = Direction((int)curDir - 2);
