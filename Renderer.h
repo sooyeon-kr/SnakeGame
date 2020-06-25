@@ -9,8 +9,7 @@
 #include <unordered_map>
 #include <list>
 
-#define MAXROW 30
-#define MAXCOL 30
+
 
 enum class WindowType{
     SCORE,
@@ -39,6 +38,8 @@ public:
     void Refresh();
 
     void End();
+
+    void ClearWindow();
 
     void PrintSystemMessage(const char* str);
     void PrintSystemMessage(std::string str);

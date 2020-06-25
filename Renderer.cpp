@@ -52,6 +52,8 @@ void Renderer::Init(){
 }
 
 void Renderer::DrawUI(){
+    // erase();
+
     DrawBox(windows[(int)WindowType::SCORE]);
     DrawBox(windows[(int)WindowType::MISSION]);
 }
@@ -131,6 +133,9 @@ void Renderer::Refresh(){
     for(int i = 0; i < (int)WindowType::SIZE; i++){
         wrefresh(windows[i]);
     }
+
+    ClearWindow();
+
 }
 
 void Renderer::DrawBox(WINDOW* win){
@@ -158,6 +163,11 @@ void Renderer::PrintSystemMessage(std::string str){
     delwin(sysWin);
 }
 
+void Renderer::ClearWindow(){
+    for(int i = 0; i < (int)WindowType::SIZE; i++){
+        werase(windows[i]);
+    }
+}
 void Renderer::PrintScoreMessage(const char* str){
     wmove(windows[(int)WindowType::SCORE], 0, 0);
     wprintw(windows[(int)WindowType::SCORE], str);
@@ -175,6 +185,7 @@ void Renderer::PrintMissionMessage(const char* str){
 void Renderer::PrintMissionMessageXY(int x, int y, const char* str){
     wmove(windows[(int)WindowType::MISSION], y, x);
     wprintw(windows[(int)WindowType::MISSION], str);
+    
 }
 
 void Renderer::End(){

@@ -53,7 +53,6 @@ private:
     void CreateItem();
     void DestructItem();
     void DestructItem(Position pos);
-    Position GetRandomPos();
 
     //
     //게이트관련 메서드
@@ -81,11 +80,18 @@ private:
     Gate* gate = nullptr;
     float gateStartTime = 0.0f;
 
-    int** scrBuffer;    //스크린용 버퍼
+    TileMap scrBuffer;
 
     const char* stages[4] = {"data/stage/stage1.txt",
                             "data/stage/stage2.txt",
                             "data/stage/stage3.txt",
                             "data/stage/stage4.txt"};
+
+    //SnakeLen, GrowthIt, PosionIt, GateNum, Time
+    Score missions[4] = { {5, 2, 5, 2, 100.0f},
+                            {6, 3, 4, 3, 150.0f},
+                            {8, 3, 3, 4, 200.0f},
+                            {10, 3, 2, 5, 300.0f}
+    };
     int curStage = 0;
 };

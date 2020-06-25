@@ -2,16 +2,33 @@
 
 using namespace std;
 
-void Snake::Init(){
+void Snake::Init(int x, int y, int dir){
   //해드 초기값
-    head.Dir = Direction::RIGHT;
-    head.Pos.x = 10;
-    head.Pos.y = 10;
+    head.Dir = (Direction)dir;
+    head.Pos.x = x;
+    head.Pos.y = y;
 
     //바디 초기값
     body.clear();
-    body.emplace_back(9, 10);
-    body.emplace_back(8, 10);
+    switch ((int)dir)
+    {
+    case (int)(Direction::RIGHT):
+      body.emplace_back(x-1, y);
+      body.emplace_back(x-2, y);
+      break;
+    case (int)(Direction::LEFT):
+      body.emplace_back(x+1, y);
+      body.emplace_back(x+2, y);
+      break;
+    case (int)(Direction::UP):
+      body.emplace_back(x, y+1);
+      body.emplace_back(x, y+2);
+      break;
+    case (int)(Direction::DOWN):
+      body.emplace_back(x, y-1);
+      body.emplace_back(x, y-2);
+      break;
+    }
 
     isLive = true;
     isClear = false;
