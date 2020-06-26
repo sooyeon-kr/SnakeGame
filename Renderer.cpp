@@ -28,7 +28,7 @@ void Renderer::Init(){
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
     //윈도우 속성 받아오기
-    std::ifstream inStream("Screen.txt");
+    std::ifstream inStream("data/screen/Screen.txt");
     if(!inStream.is_open()){
         printw("Error\n");
         endwin();
