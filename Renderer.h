@@ -42,7 +42,6 @@ public:
     void ClearWindow();
 
     void PrintSystemMessage(const char* str);
-    void PrintSystemMessage(std::string str);
 
     void PrintScoreMessage(const char* str);
     void PrintScoreMessageXY(int x, int y, const char* str);

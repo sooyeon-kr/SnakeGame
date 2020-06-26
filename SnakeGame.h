@@ -54,11 +54,9 @@ private:
     void DestructItem();
     void DestructItem(Position pos);
 
-    //
-    //게이트관련 메서드
-    //
-    void CreateGate();  //게이트 생성
-    DPosition IndicatePassedDPos(DPosition headPos);    //게이트 통과 시에 다음 좌표와 방향 리턴
+    // 게이트관련 메서드
+    void CreateGate();  // 게이트 생성
+    DPosition IndicatePassedDPos(DPosition headPos);    // 게이트 통과 시에 다음 좌표와 방향 리턴
     bool CanMovePos(int x, int y);
     
     bool GameClear();
@@ -87,11 +85,17 @@ private:
                             "data/stage/stage3.txt",
                             "data/stage/stage4.txt"};
 
-    //SnakeLen, GrowthIt, PosionIt, GateNum, Time
+    // SnakeLen, GrowthIt, PosionIt, GateNum, Time
     Score missions[4] = { {5, 2, 5, 2, 100.0f},
                             {6, 3, 4, 3, 150.0f},
                             {8, 3, 3, 4, 200.0f},
                             {10, 3, 2, 5, 300.0f}
+    };
+
+    Position snakeInitPos[4] = { {10, 10},
+                                {15, 17},
+                                {16, 14},
+                                {22, 22}
     };
     int curStage = 0;
 };

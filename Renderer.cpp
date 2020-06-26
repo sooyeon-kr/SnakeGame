@@ -1,7 +1,7 @@
 #include "Renderer.h"
 #include <fstream>
 #include <memory.h>
-
+#include <vector>
 #define PAD 20 //이미 지정되어 있는 COLOR_XXXX값과 겹치지 않게 컬러를 설정해주기 위해 임의의 padding값 설정
 
 void Renderer::Init(){
@@ -144,20 +144,39 @@ void Renderer::DrawBox(WINDOW* win){
 }
 
 void Renderer::PrintSystemMessage(const char* str){
-    WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
-
+    std::vector<std::string> strs;
+    std::string tempStr;
+    int maxLen=0;
+    for(int i=0;  ;i++)
+    {
+        if(str[i]=='\n')
+        {
+            strs.push_back(tempStr);
+            if(maxLen < tempStr.length())
+                maxLen = tempStr.length();
+            tempStr.clear();
+        }
+        else if (str[i]=='\0')
+        {
+            strs.push_back(tempStr);
+            if(maxLen < tempStr.length())
+                maxLen = tempStr.length();
+            tempStr.clear();
+            break;
+        }
+        else
+        {
+            tempStr.push_back(str[i]);
+        }
+    }
+    
+    WINDOW* sysWin = subwin(stdscr, 10, maxLen, 10, maxLen<MAXCOL?MAXCOL/2-maxLen/2 : 3);
     wattron(sysWin, COLOR_PAIR(3));
-    wprintw(sysWin, str);
-    wattroff(sysWin, COLOR_PAIR(3));
-    wrefresh(sysWin);
-    delwin(sysWin);
-}
-
-void Renderer::PrintSystemMessage(std::string str){
-    WINDOW* sysWin = subwin(stdscr, 10, 10, 10, 10);
-
-    wattron(sysWin, COLOR_PAIR(3));
-    wprintw(sysWin, str.c_str());
+    for(int i=0; i<strs.size(); i++)
+    {
+        wmove(sysWin, i, (maxLen/2 - strs[i].length()/2));
+        wprintw(sysWin, strs[i].c_str());
+    }
     wattroff(sysWin, COLOR_PAIR(3));
     wrefresh(sysWin);
     delwin(sysWin);

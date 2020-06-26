@@ -13,28 +13,10 @@ void SnakeGame::Init()
   renderer.Init();
   mStage.loadStage(stages[CLEAR]);
   mission = missions[CLEAR];
-
-  if (CLEAR == 0)
-  {
-    mSnake.Init(10, 10, rand()%(int)Direction::SIZE);
-  }
-  else if (CLEAR == 1)
-  {
-    mSnake.Init(17, 17, rand()%(int)Direction::SIZE);
-  }
-  else if (CLEAR == 2)
-  {
-    mSnake.Init(17, 17, rand()%(int)Direction::SIZE);
-  }
-  else if (CLEAR == 3)
-  {
-    mSnake.Init(27, 27, rand()%(int)Direction::SIZE);
-  }
+  mSnake.Init(snakeInitPos[CLEAR].x, snakeInitPos[CLEAR].y, rand() % (int)Direction::SIZE);
 
   //Items 초기화
   Items.clear();
-  // Gates.clear();
-
 
   mGameTimer.Init();
   NonBlocking();
@@ -137,22 +119,23 @@ bool SnakeGame::Play()
         //몸이 최대길이보다 작을경우에만 몸길이 늘리기
         if (mSnake.GetSnakeLength() < mSnake.GetSnakeMaxLength())
         {
-          mSnake.body.push_front(mSnake.head.Pos);
-          mSnake.head = nextHeadPos;
+          mSnake.GetCurBodyPos().push_front(mSnake.GetCurHeadPos());
+          mSnake.GetCurDirection() = nextHeadPos.Dir;
+          mSnake.GetCurHeadPos() = nextHeadPos.Pos;
           score.SnakeLength = mSnake.GetSnakeLength(); // 스네이크의 몸의 길이를 스코어에 반영해주어야 하므로
           score.GrowthItemNum++;
         }
 
-        DestructItem(mSnake.head.Pos);
+        DestructItem(mSnake.GetCurHeadPos());
       }
       else if (t == TileType::Item_Poison)
       {
-        mSnake.body.pop_back();
+        mSnake.GetCurBodyPos().pop_back();
         mSnake.UpdateSnakePos(nextHeadPos);
         score.PoisonItemNum++;
         score.SnakeLength = mSnake.GetSnakeLength();
 
-        DestructItem(mSnake.head.Pos);
+        DestructItem(mSnake.GetCurHeadPos());
 
         // 스네이크의 몸의 길이가 3보다 작아지거나 PoisonItem을 Mission에서 제한한 갯수보다 많이 먹었을 경우 죽음
         if (mSnake.GetSnakeLength() < 3 || score.PoisonItemNum > mission.PoisonItemNum)
@@ -331,37 +314,45 @@ bool SnakeGame::Play()
       }
       else //y입력
       {
-        //1단계 다시 시작을 위한 초기화
-        totalDt = 0.0f;
-        updateDT = 0.0f;
-        gateT = 0.0f;
-        score.SnakeLength = 3;
-        score.GrowthItemNum = 0;
-        score.PoisonItemNum = 0;
-        score.UsedGateNum = 0;
-        score.time = 0.0f;
-        gate = nullptr;
-        CLEAR = 0;
+
+
         RestartGame(); //재시작
-        continue;
+        return true;
       }
     }
     //게임클리어 조건 검사
     if (IsClear())
     {
       CLEAR++;
+      if (CLEAR == 4)
+      {
+        char str[256];
+        sprintf(str, " Congraturation~Clear!! \n\n The time you played is %.0f sec! \n\n Retry? Y/N ", totalDt);
+        //렌더러를 이용해서 시스템 문자열 출력
+        renderer.PrintSystemMessage(str);
+
+        //리트라이 입력을 받아서 bool값 리턴
+        Blocking();
+        while (1)
+        {
+          int key = getch();
+          if (key == 'y' || (key + 32) == 'y')
+          {
+            CLEAR = 0;
+            RestartGame();
+            return true;
+          }
+          else if (key == 'n' | (key + 32) == 'n')
+          {
+            return false;
+          }
+        }
+      }
+
       if (GameClear())
       {
-        updateDT = 0.0f;
-        gateT = 0.0f;
-        score.SnakeLength = 3;
-        score.GrowthItemNum = 0;
-        score.PoisonItemNum = 0;
-        score.UsedGateNum = 0;
-        score.time = 0.0f;
-        gate = nullptr;
         RestartGame();
-        continue;
+        return true;
       }
       else
       {
@@ -379,12 +370,19 @@ bool SnakeGame::Play()
 void SnakeGame::Exit()
 {
   renderer.End();
-
 }
 
 void SnakeGame::RestartGame()
 {
   // mGameTimer.ResetTimer();
+        score.SnakeLength = 3;
+        score.GrowthItemNum = 0;
+        score.PoisonItemNum = 0;
+        score.UsedGateNum = 0;
+        score.time = 0.0f;
+        gate = nullptr;
+        if(!mSnake.IsAlive())
+          CLEAR = 0;
 
   Init();
   //renderer.Init();
@@ -431,27 +429,25 @@ void SnakeGame::WriteStageToScreen(Stage &stage)
   for (int i = 0; i < row; i++)
     for (int k = 0; k < col; k++)
       scrBuffer.SetTile(k, i, map[i][k]);
-
 }
 
 //모두 scrBuffer에 각각의 TileType 저장
 void SnakeGame::WriteSnakeToScreen(Snake &snake)
 {
   //헤드 그리기
-  scrBuffer.SetTile(snake.head.Pos.x, snake.head.Pos.y, (int)TileType::Snake_Head);
+  scrBuffer.SetTile(snake.GetCurHeadPos().x, snake.GetCurHeadPos().y, (int)TileType::Snake_Head);
 
   //바디 그리기
   int cnt = 0;
-  for (auto it = snake.body.begin(); it != snake.body.end(); it++)
+  for (auto it = snake.GetCurBodyPos().begin(); it != snake.GetCurBodyPos().end(); it++)
   {
     cnt++;
-    if (cnt == snake.body.size())
+    if (cnt == snake.GetCurBodyPos().size())
     {
       scrBuffer.SetTile(it->x, it->y, (int)TileType::Snake_Tail);
       break;
     }
-      scrBuffer.SetTile(it->x, it->y, (int)TileType::Snake_Body);
-
+    scrBuffer.SetTile(it->x, it->y, (int)TileType::Snake_Body);
   }
 }
 
@@ -459,16 +455,15 @@ void SnakeGame::WriteItemToScreen()
 {
   for (auto e : Items)
   {
-      scrBuffer.SetTile(e.Pos.x, e.Pos.y, (int)e.ItemType);
-
+    scrBuffer.SetTile(e.Pos.x, e.Pos.y, (int)e.ItemType);
   }
 }
 void SnakeGame::WriteGateToScreen()
 {
   if (gate != nullptr)
   {
-      scrBuffer.SetTile(gate->gPos1.x, gate->gPos1.y, (int)TileType::Gate);
-      scrBuffer.SetTile(gate->gPos2.x, gate->gPos2.y, (int)TileType::Gate2);
+    scrBuffer.SetTile(gate->gPos1.x, gate->gPos1.y, (int)TileType::Gate);
+    scrBuffer.SetTile(gate->gPos2.x, gate->gPos2.y, (int)TileType::Gate2);
   }
 }
 
@@ -547,7 +542,7 @@ void SnakeGame::CreateItem()
 void SnakeGame::CreateGate()
 {
   if (gate == nullptr)
-  {                                  //게이트가 없으면
+  { //게이트가 없으면
     Position randPos1, randPos2;
 
     while (true)

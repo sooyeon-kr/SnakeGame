@@ -36,13 +36,15 @@ public:
     void Clear(){isClear = true;}
     // void IsClear(){return isClear;}
 
-    Direction GetCurDirection(){return head.Dir;}
+    Direction& GetCurDirection(){return head.Dir;}
+    Position& GetCurHeadPos(){return head.Pos;}
+    std::list<Position>& GetCurBodyPos(){return body;}
     int GetSnakeLength(){return body.size() + 1;}
     int GetSnakeMaxLength(){return maxLength;}
     bool IsAlive(){return isLive;}
     bool IsClear(){return isClear;}
 
-public:
+private:
     DPosition head; //뱀의 머리의 방향값과 좌표값을 가지고 있음
     std::list<Position> body;
     const int maxLength = 15;
