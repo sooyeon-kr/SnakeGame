@@ -1,7 +1,7 @@
 OBJECTS = main.o Renderer.o SnakeGame.o Snake.o Stage.o Timer.o
 CC=g++
-main: $(OBJECTS)
-	$(CC) -o main $(OBJECTS) -lncursesw
+snakegame: $(OBJECTS)
+	$(CC) -o snakegame $(OBJECTS) -lncursesw
 
 main.o: main.cpp SnakeGame.h
 	$(CC) -c main.cpp
