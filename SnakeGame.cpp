@@ -11,9 +11,9 @@ void SnakeGame::Init()
   srand(time(NULL));
 
   renderer.Init();
-  mStage.loadStage(stages[CLEAR]);
-  mission = missions[CLEAR];
-  mSnake.Init(snakeInitPos[CLEAR].x, snakeInitPos[CLEAR].y, rand() % (int)Direction::SIZE);
+  mStage.loadStage(stages[stageStep]);
+  mission = missions[stageStep];
+  mSnake.Init(snakeInitPos[stageStep].x, snakeInitPos[stageStep].y, rand() % (int)Direction::SIZE);
 
   //Items 초기화
   Items.clear();
@@ -323,8 +323,8 @@ bool SnakeGame::Play()
     //게임클리어 조건 검사
     if (IsClear())
     {
-      CLEAR++;
-      if (CLEAR == 4)
+      stageStep++;
+      if (stageStep == 4)
       {
         char str[256];
         sprintf(str, " Congraturation~Clear!! \n\n The time you played is %.0f sec! \n\n Retry? Y/N ", totalDt);
@@ -332,13 +332,13 @@ bool SnakeGame::Play()
         renderer.PrintSystemMessage(str);
 
         //리트라이 입력을 받아서 bool값 리턴
-        Blocking();
+        Blocking(); // 게임 재시작 여부에 대한 키를 입력받기 전 호출
         while (1)
         {
           int key = getch();
           if (key == 'y' || (key + 32) == 'y')
           {
-            CLEAR = 0;
+            stageStep = 0;
             RestartGame();
             return true;
           }
@@ -366,7 +366,7 @@ bool SnakeGame::Play()
   }
 }
 
-//끝냈을 때 사용하려고 만든 메서드
+// 게임을 끝내기 위한 메소드
 void SnakeGame::Exit()
 {
   renderer.End();
@@ -382,32 +382,9 @@ void SnakeGame::RestartGame()
         score.time = 0.0f;
         gate = nullptr;
         if(!mSnake.IsAlive())
-          CLEAR = 0;
+          stageStep = 0;
 
   Init();
-  //renderer.Init();
-
-  // if (CLEAR == 0)
-  // {
-  //   mStage.loadStage("data/stage/stage1.txt");
-  // }
-  // else if (CLEAR == 1)
-  // {
-  //   mStage.loadStage("data/stage/stage2.txt");
-  // }
-  // else if (CLEAR == 2)
-  // {
-  //   mStage.loadStage("data/stage/stage3.txt");
-  // }
-  // else if (CLEAR == 3)
-  // {
-  //   mStage.loadStage("data/stage/stage4.txt");
-  // }
-
-  // mSnake.Init();
-
-  // Items.clear();
-  // NonBlocking();
 }
 
 //scrBuffer의 값을 비워주기 위해 모두 0으로 채워준다.

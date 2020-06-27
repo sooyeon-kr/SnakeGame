@@ -1,39 +1,33 @@
 #ifndef __TIMER__
 #define __TIMER__
 
+/*시간 관련 클래스*/
 class Timer{
 public:
     Timer() = default;
     ~Timer() = default;
 
 public:
-    //초기화
+    // 시간을 초기화하는 메소드
     void Init();
 
-    //타이머 리셋
-    void ResetTimer();
-
-    //댈타타임갱신
+    // 시간을 갱신하는 메소드
     void UpdateTime();
 
-    //델타타임가져오는 함수
+    // 델타타임을 리턴해주는 메소드
     float GetDeltaTime();
 
-    //경과시간을 리턴해주는 함수
+    // 경과시간을 리턴해주는 메소드
     float GetFlowTime();
 
-
 private:
-    //틱 계산 함수
+    // 틱을 계산하는 메소드
     unsigned int GetTickCount();
 
-
 private:
-    unsigned long startTime;
-    unsigned long curTime;
-    unsigned long prevTime;
-    unsigned long endTime;
-    unsigned long delTime;
-
+    unsigned long startTime; // 시작 시간을 저장하는 변수
+    unsigned long curTime; // 현재 시간을 저장하는 변수
+    unsigned long prevTime; // 이전 시간을 저장하는 변수
+    unsigned long delTime; // 델타타임을 저장하는 변수
 };
 #endif

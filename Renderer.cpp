@@ -27,6 +27,7 @@ void Renderer::Init(){
     init_pair((int)TileType::Gate2, COLOR_MAGENTA, COLOR_BLACK);
     init_pair((int)TileType::Size, COLOR_BLUE, COLOR_BLACK);
     bkgd(COLOR_PAIR((int)TileType::Size)); //background 지정
+    
     //윈도우 속성 받아오기
     std::ifstream inStream("data/screen/Screen.txt");
     if(!inStream.is_open()){
@@ -52,8 +53,6 @@ void Renderer::Init(){
 }
 
 void Renderer::DrawUI(){
-    // erase();
-
     DrawBox(windows[(int)WindowType::SCORE]);
     DrawBox(windows[(int)WindowType::MISSION]);
 }
@@ -128,6 +127,7 @@ void Renderer::Draw(int** scrBuffer){
     }
 }
 
+// 
 void Renderer::Refresh(){
     refresh();
     for(int i = 0; i < (int)WindowType::SIZE; i++){

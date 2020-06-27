@@ -4,53 +4,62 @@
 #include <list>
 #include "SharedDataType.h"
 
-//방향 종류
-enum Direction{
-    UP ,
+// 방향 종류를 저장하는 열거형
+enum Direction
+{
+    UP,
     RIGHT,
     DOWN,
-    LEFT ,
-    SIZE 
+    LEFT,
+    SIZE
 };
 
-//헤드
-struct DPosition{
+// 방향과 좌표를 저장하는 구조체
+struct DPosition
+{
     Direction Dir;
     Position Pos;
-
 };
 
-class Snake{
+/*Snake관련 클래스*/
+class Snake
+{
 public:
-    Snake() = default;
-    ~Snake() = default;
+    Snake() = default; // 생성자
+    ~Snake() = default; // 디폴트
 
 public:
-    //초기화
+    // Snake의 데이터를 초기화하는 메소드
     void Init(int x, int y, int dir);
-    //키 입력받아 다음 방향 결정하는 함수
+    // 다음 방향 결정하여 리턴하는 메소드
     DPosition NextSnakeHeadPos(Direction nextDir);
-    void UpdateSnakePos(DPosition& dPos);
-
-    void Die(){isLive = false;}
-    void Clear(){isClear = true;}
-    // void IsClear(){return isClear;}
-
-    Direction& GetCurDirection(){return head.Dir;}
-    Position& GetCurHeadPos(){return head.Pos;}
-    std::list<Position>& GetCurBodyPos(){return body;}
-    int GetSnakeLength(){return body.size() + 1;}
-    int GetSnakeMaxLength(){return maxLength;}
-    bool IsAlive(){return isLive;}
-    bool IsClear(){return isClear;}
+    // Snake의 body위치를 업데이트하는 메소드
+    void UpdateSnakePos(DPosition &dPos);
+    // Snake의 방향을 리턴해주는 메소드
+    Direction &GetCurDirection() { return head.Dir; }
+    // Snake의 위치를 리턴해주는 메소드
+    Position &GetCurHeadPos() { return head.Pos; }
+    // Snake의 body를 리턴해주는 메소드
+    std::list<Position> &GetCurBodyPos() { return body; }
+    // Snake의 현재 길이를 리턴해주는 메소드
+    int GetSnakeLength() { return body.size() + 1; }
+    // Snake의 최대 길이를 리턴해주는 메소드
+    int GetSnakeMaxLength() { return maxLength; }
+    // Snake의 상태를 죽음으로 설정하는 메소드
+    void Die() { isLive = false; }
+    // Snake가 살아있는지 여부를 리턴해주는 메소드
+    bool IsAlive() { return isLive; }
 
 private:
-    DPosition head; //뱀의 머리의 방향값과 좌표값을 가지고 있음
+    // 방향과 좌표를 갖는 Snake의 head 변수
+    DPosition head;
+    // 좌표를 갖는 list형의 body 변수
     std::list<Position> body;
+    // Snake의 최대 길이를 저장하는 변수
     const int maxLength = 15;
+    // Snake의 최소 길이를 저장하는 변수
     const int minLength = 3;
-    bool isLive = true; //뱀이 죽었는지 살았는지 체크
-    bool isClear = false;
+    // 뱀이 죽었는지 살았는지 체크하는 변수
+    bool isLive = true;
 };
-
 #endif

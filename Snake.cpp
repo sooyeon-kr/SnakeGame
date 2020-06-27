@@ -31,7 +31,6 @@ void Snake::Init(int x, int y, int dir){
     }
 
     isLive = true;
-    isClear = false;
 
 }
 
